@@ -16,8 +16,69 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Class 10 Study Hub</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Styling */
+        :root {
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+            --header-footer-bg: #333;
+            --header-footer-text: white;
+            --card-bg: #fff;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
+        }
+        header, footer {
+            background-color: var(--header-footer-bg);
+            color: var(--header-footer-text);
+            text-align: center;
+            padding: 1em;
+        }
+        .toggle-theme {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--header-footer-text);
+            color: var(--header-footer-bg);
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .dropdown h3 {
+            background-color: var(--header-footer-bg);
+            color: var(--header-footer-text);
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .dropdown ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            background: var(--card-bg);
+            border: 1px solid #ddd;
+        }
+        .dropdown ul li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .dropdown ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+        footer {
+            margin-top: 20px;
+        }
+    </style>
 </head>
-
 <body>
     <header>
         <div class="container">
@@ -31,51 +92,34 @@
                 </ul>
             </nav>
         </div>
+        <h1>Class 10 Study Hub</h1>
+        <button class="toggle-theme" onclick="toggleTheme()">Switch to Dark Mode</button>
     </header>
     <section id="home" class="section">
         <h2>Welcome to Class 10 Study Hub</h2>
         <p>Your one-stop destination for Class 10 study materials, notes, and solutions!</p>
     </section>
-    <section id="subjects" class="section">
-        <h2>Subjects</h2>
-        <div class="subject-list">
-            <div class="subject-item">
-                <h3>Math</h3>
-                <ul>
-                    <li><a href="#">Real Numbers</a></li>
-                    <li><a href="#">Polynomials</a></li>
-                    <li><a href="#">Quadratic Equations</a></li>
-                    <li><a href="#">Surface Areas and Volumes</a></li>
-                    <li><a href="#">Statistics</a></li>
-                </ul>
-            </div>
-            <div class="subject-item">
-                <h3>Science</h3>
-                <ul>
-                    <li><a href="#">Chemical Reactions</a></li>
-                    <li><a href="#">Acids, Bases, and Salts</a></li>
-                    <li><a href="#">Life Processes</a></li>
-                    <li><a href="#">Electricity</a></li>
-                </ul>
-            </div>
-            <div class="subject-item">
-                <h3>English</h3>
-                <ul>
-                    <li><a href="#">The First Flight</a></li>
-                    <li><a href="#">Footprints Without Feet</a></li>
-                    <li><a href="#">Grammar</a></li>
-                </ul>
-            </div>
-            <div class="subject-item">
-                <h3>Social Science</h3>
-                <ul>
-                    <li><a href="#">History</a></li>
-                    <li><a href="#">Geography</a></li>
-                    <li><a href="#">Economics</a></li>
-                </ul>
-            </div>
+        <!-- Subjects with Dropdown Menus -->
+    <section id="subjects">
+        <div class="dropdown">
+            <h3 onclick="toggleDropdown('math-chapters')">Math</h3>
+            <ul id="math-chapters">
+                <li><a href="#">Real Numbers</a></li>
+                <li><a href="#">Polynomials</a></li>
+                <li><a href="#">Pair of Linear Equations</a></li>
+                <li><a href="#">Quadratic Equations</a></li>
+                <li><a href="#">Arithmetic Progressions</a></li>
+            </ul>
         </div>
-    </section>
+        <div class="dropdown">
+            <h3 onclick="toggleDropdown('science-chapters')">Science</h3>
+            <ul id="science-chapters">
+                <li><a href="#">Chemical Reactions</a></li>
+                <li><a href="#">Acids, Bases, and Salts</a></li>
+                <li><a href="#">Metals and Non-Metals</a></li>
+            </ul>
+        </div>
+    </section> 
     <section id="resources" class="section">
         <h2>Resources</h2>
         <div class="resource-list">
@@ -102,6 +146,34 @@
         <p>&copy; 2024 Class 10 Study Hub</p>
     </footer>
     <script>
+        // Function to toggle dropdown menus
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+        // Function to toggle between Dark and Light mode
+        let isDarkMode = false;
+        function toggleTheme() {
+            const root = document.documentElement;
+            if (!isDarkMode) {
+                // Switch to Dark Mode
+                root.style.setProperty('--bg-color', '#333');
+                root.style.setProperty('--text-color', '#f4f4f4');
+                root.style.setProperty('--header-footer-bg', '#000');
+                root.style.setProperty('--header-footer-text', '#fff');
+                root.style.setProperty('--card-bg', '#444');
+                document.querySelector('.toggle-theme').textContent = "Switch to Light Mode";
+            } else {
+                // Switch to Light Mode
+                root.style.setProperty('--bg-color', '#f4f4f4');
+                root.style.setProperty('--text-color', '#333');
+                root.style.setProperty('--header-footer-bg', '#333');
+                root.style.setProperty('--header-footer-text', '#fff');
+                root.style.setProperty('--card-bg', '#fff');
+                document.querySelector('.toggle-theme').textContent = "Switch to Dark Mode";
+            }
+            isDarkMode = !isDarkMode;
+        }
         const backToTopBtn = document.getElementById('back-to-top');
         window.onscroll = () => {
             if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
