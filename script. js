@@ -43,8 +43,3 @@ function toggleTheme() {
         themeToggle.innerHTML = '☀️';
     }
 }
-
-// Back to Top Button Visibility
-window.addEventListener('scroll', function() {
-    const backToTopButton = document.getElementById('back-to-top');
-    if (window.scroll) 
