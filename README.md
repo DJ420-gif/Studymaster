@@ -273,6 +273,7 @@
             document.querySelector('.no-results').style.display = noResults ? 'block' : 'none';
         });
     </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
