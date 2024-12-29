@@ -79,20 +79,33 @@
         }
     </style>
 </head>
-<body>
-    <header>
+<body class="bg-light text-dark">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-            <h1>Class 10 Study Hub</h1>
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#subjects">Subjects</a></li>
-                    <li><a href="#resources">Resources</a></li>
-                    <li><a href="#contact">Contact</a></li>
+            <a class="navbar-brand" href="#">Class 10 Study Hub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#subjects">Subjects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#resources">Resources</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item theme-toggle-btn"><i class="fas fa-moon"></i></li>
                 </ul>
-            </nav>
+            </div>
         </div>
-        <h1>Class 10 Study Hub</h1>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-light text-center py-5">
+        <div class="container">
+            <h1>Welcome to Class 10 Study Hub</h1>
+            <p>Your one-stop destination for study materials, notes, and solutions!</p>
+            <button class="btn btn-primary">Explore Now</button>
+        </div>
         <button class="toggle-theme" onclick="toggleTheme()">Switch to Dark Mode</button>
     </header>
     <section id="home" class="section">
@@ -104,38 +117,45 @@
         <input type="text" id="search-box" class="search-box" placeholder="Search for subjects, chapters, or topics...">
         <p class="no-results">No results found. Please try a different keyword.</p>
     </div>
-    <!-- Subjects with Dropdown Menus -->
-    <section id="subjects">
-    <div class="dropdown">
-            <h3 onclick="toggleDropdown('math-chapters')">Math</h3>
-            <ul id="math-chapters" class="searchable">
-                <li><a href="#">Real Numbers</a></li>
-                <li><a href="#">Polynomials</a></li>
-                <li><a href="#">Pair of Linear Equations</a></li>
-                <li><a href="#">Quadratic Equations</a></li>
-                <li><a href="#">Arithmetic Progressions</a></li>
-            </ul>
-        </div>
-        <div class="dropdown">
-            <h3 onclick="toggleDropdown('science-chapters')">Science</h3>
-            <ul id="science-chapters" class="searchable">
-                <li><a href="#">Chemical Reactions</a></li>
-                <li><a href="#">Acids, Bases, and Salts</a></li>
-                <li><a href="#">Metals and Non-Metals</a></li>
-                <li><a href="#">Electricity</a></li>
-                <li><a href="#">Magnetic Effects of Current</a></li>
-            </ul>
-        </div>
-        <div class="dropdown">
-            <h3 onclick="toggleDropdown('social-science-chapters')">Social Science</h3>
-            <ul id="social-science-chapters" class="searchable">
-                <li><a href="#">Nationalism in India</a></li>
-                <li><a href="#">The Rise of Nationalism in Europe</a></li>
-                <li><a href="#">Water Resources</a></li>
-                <li><a href="#">Agriculture</a></li>
-                <li><a href="#">Development</a></li>
-            </ul>
-        </div>
+    <!-- Subjects Section -->
+    <section id="subjects" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Subjects</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Math</h5>
+                            <ul>
+                                <li><a href="#">Real Numbers</a></li>
+                                <li><a href="#">Polynomials</a></li>
+                                <li><a href="#">Quadratic Equations</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Science</h5>
+                            <ul>
+                                <li><a href="#">Chemical Reactions</a></li>
+                                <li><a href="#">Electricity</a></li>
+                                <li><a href="#">Magnetic Effects</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Social Science</h5>
+                            <ul>
+                                <li><a href="#">Nationalism in India</a></li>
+                                <li><a href="#">Agriculture</a></li>
+                                <li><a href="#">Development</a></li>
+                            </ul>
+                        </div>
     <section id="resources" class="section">
         <h2>Resources</h2>
         <div class="resource-list">
