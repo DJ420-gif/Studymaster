@@ -99,11 +99,16 @@
         <h2>Welcome to Class 10 Study Hub</h2>
         <p>Your one-stop destination for Class 10 study materials, notes, and solutions!</p>
     </section>
-        <!-- Subjects with Dropdown Menus -->
+        <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" id="search-box" class="search-box" placeholder="Search for subjects, chapters, or topics...">
+        <p class="no-results">No results found. Please try a different keyword.</p>
+    </div>
+    <!-- Subjects with Dropdown Menus -->
     <section id="subjects">
-        <div class="dropdown">
+    <div class="dropdown">
             <h3 onclick="toggleDropdown('math-chapters')">Math</h3>
-            <ul id="math-chapters">
+            <ul id="math-chapters" class="searchable">
                 <li><a href="#">Real Numbers</a></li>
                 <li><a href="#">Polynomials</a></li>
                 <li><a href="#">Pair of Linear Equations</a></li>
@@ -113,13 +118,24 @@
         </div>
         <div class="dropdown">
             <h3 onclick="toggleDropdown('science-chapters')">Science</h3>
-            <ul id="science-chapters">
+            <ul id="science-chapters" class="searchable">
                 <li><a href="#">Chemical Reactions</a></li>
                 <li><a href="#">Acids, Bases, and Salts</a></li>
                 <li><a href="#">Metals and Non-Metals</a></li>
+                <li><a href="#">Electricity</a></li>
+                <li><a href="#">Magnetic Effects of Current</a></li>
             </ul>
         </div>
-    </section> 
+        <div class="dropdown">
+            <h3 onclick="toggleDropdown('social-science-chapters')">Social Science</h3>
+            <ul id="social-science-chapters" class="searchable">
+                <li><a href="#">Nationalism in India</a></li>
+                <li><a href="#">The Rise of Nationalism in Europe</a></li>
+                <li><a href="#">Water Resources</a></li>
+                <li><a href="#">Agriculture</a></li>
+                <li><a href="#">Development</a></li>
+            </ul>
+        </div>
     <section id="resources" class="section">
         <h2>Resources</h2>
         <div class="resource-list">
@@ -184,6 +200,30 @@
         };
         backToTopBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+                // Search Functionality
+        const searchBox = document.getElementById('search-box');
+        const searchableLists = document.querySelectorAll('.searchable');
+        const noResults = document.querySelector('.no-results');
+        searchBox.addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            let found = false;
+            searchableLists.forEach(list => {
+                let hasVisibleItems = false;
+                const items = list.querySelectorAll('li');
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        item.style.display = 'block';
+                        hasVisibleItems = true;
+                        found = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                list.style.display = hasVisibleItems ? 'block' : 'none';
+            });
+            noResults.style.display = found ? 'none' : 'block';
         });
     </script>
 </body>
