@@ -65,16 +65,25 @@ header nav a:hover {
 }
 .resource-list {
     display: flex;
-    gap: 20px;
-    justify-content: space-between;
+    justify-content: space-around; /* Spaces out the items */
+    flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
+    gap: 20px; /* Adds space between items */
 }
 .resource-item {
-    background-color: #f4f4f4;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    width: calc(33.33% - 20px); /* Makes each item take 1/3 of the container width */
+    box-sizing: border-box;
+    text-align: center;
+}
+.resource-item h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
 }
 .resource-item a {
-    color: #4CAF50;
+    font-size: 16px;
+    color: #007bff;
     text-decoration: none;
 }
 .resource-item a:hover {
@@ -100,4 +109,17 @@ footer {
 }
 footer p {
     margin: 0;
+}
+.card-body .card-title {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    font-size: 20px;
+}
+.card-body .card-title i {
+    margin-right: 10px; /* Space between the icon and text */
+}
+/* Example to make the icons and title look aligned */
+.card-body .card-title i {
+    font-size: 24px; /* Adjust icon size to fit well with the text */
 }
