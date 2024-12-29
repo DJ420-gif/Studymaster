@@ -1,0 +1,37 @@
+// Dark Mode Toggle Script
+let isDarkMode = false;
+// Function to toggle between light and dark modes
+function toggleTheme() {
+    // Toggle dark mode class on the <body>
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle('dark', isDarkMode);  
+    // Toggle dark mode class on the header
+    document.querySelector('header').classList.toggle('dark', isDarkMode);
+    // Toggle dark mode class on all cards
+    document.querySelectorAll('.card-body').forEach(card => card.classList.toggle('dark', isDarkMode));
+    // Update the sun/moon icon in the toggle button
+    const icon = document.querySelector('.theme-toggle-btn i');
+    if (isDarkMode) {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+    } else {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    }
+    // Save theme preference in local storage
+    localStorage.setItem('darkMode', isDarkMode);
+}
+// Function to load the user's theme preference on page load
+function loadThemePreference() {
+    const savedTheme = localStorage.getItem('darkMode');
+    if (savedTheme === 'true') {
+        isDarkMode = true;
+        document.body.classList.add('dark');
+        document.querySelector('header').classList.add('dark');
+        document.querySelectorAll('.card-body').forEach(card => card.classList.add('dark'));
+        document.querySelector('.theme-toggle-btn i').classList.remove('fa-sun');
+        document.querySelector('.theme-toggle-btn i').classList.add('fa-moon');
+    }
+}
+// Load the theme preference when the page loads
+window.onload = loadThemePreference;
