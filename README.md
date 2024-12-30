@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -27,7 +28,7 @@
                 </ul>
             </nav>
             <div class="search-container">
-                <input type="text" id="search-bar" placeholder="Search...">
+                <input type="text" id="search-bar" placeholder="Search chapters...">
                 <button id="search-btn" onclick="performSearch()">🔍</button>
             </div>
         </div>
@@ -42,36 +43,36 @@
             <div class="subject-item">
                 <h3>Math</h3>
                 <ul>
-                    <li><a href="#">Real Numbers</a></li>
-                    <li><a href="#">Polynomials</a></li>
-                    <li><a href="#">Quadratic Equations</a></li>
-                    <li><a href="#">Surface Areas and Volumes</a></li>
-                    <li><a href="#">Statistics</a></li>
+                    <li><a href="#" onclick="showOptions('Math - Real Numbers')">Real Numbers</a></li>
+                    <li><a href="#" onclick="showOptions('Math - Polynomials')">Polynomials</a></li>
+                    <li><a href="#" onclick="showOptions('Math - Quadratic Equations')">Quadratic Equations</a></li>
+                    <li><a href="#" onclick="showOptions('Math - Surface Areas and Volumes')">Surface Areas and Volumes</a></li>
+                    <li><a href="#" onclick="showOptions('Math - Statistics')">Statistics</a></li>
                 </ul>
             </div>
             <div class="subject-item">
                 <h3>Science</h3>
                 <ul>
-                    <li><a href="#">Chemical Reactions</a></li>
-                    <li><a href="#">Acids, Bases, and Salts</a></li>
-                    <li><a href="#">Life Processes</a></li>
-                    <li><a href="#">Electricity</a></li>
+                    <li><a href="#" onclick="showOptions('Science - Chemical Reactions')">Chemical Reactions</a></li>
+                    <li><a href="#" onclick="showOptions('Science - Acids, Bases, and Salts')">Acids, Bases, and Salts</a></li>
+                    <li><a href="#" onclick="showOptions('Science - Life Processes')">Life Processes</a></li>
+                    <li><a href="#" onclick="showOptions('Science - Electricity')">Electricity</a></li>
                 </ul>
             </div>
             <div class="subject-item">
                 <h3>English</h3>
                 <ul>
-                    <li><a href="#">The First Flight</a></li>
-                    <li><a href="#">Footprints Without Feet</a></li>
-                    <li><a href="#">Grammar</a></li>
+                    <li><a href="#" onclick="showOptions('English - The First Flight')">The First Flight</a></li>
+                    <li><a href="#" onclick="showOptions('English - Footprints Without Feet')">Footprints Without Feet</a></li>
+                    <li><a href="#" onclick="showOptions('English - Grammar')">Grammar</a></li>
                 </ul>
             </div>
             <div class="subject-item">
                 <h3>Social Science</h3>
                 <ul>
-                    <li><a href="#">History</a></li>
-                    <li><a href="#">Geography</a></li>
-                    <li><a href="#">Economics</a></li>
+                    <li><a href="#" onclick="showOptions('Social Science - History')">History</a></li>
+                    <li><a href="#" onclick="showOptions('Social Science - Geography')">Geography</a></li>
+                    <li><a href="#" onclick="showOptions('Social Science - Economics')">Economics</a></li>
                 </ul>
             </div>
         </div>
@@ -113,9 +114,36 @@
         backToTopBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+        function showOptions(chapter) {
+            const options = `
+                <h3>${chapter}</h3>
+                <ul>
+                    <li><a href="#">Notes</a></li>
+                    <li><a href="#">Solutions</a></li>
+                    <li><a href="#">Tests</a></li>
+                </ul>
+            `;
+            const modal = document.createElement('div');
+            modal.id = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    ${options}
+                    <button onclick="closeModal()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            if (modal) modal.remove();
+        }
         function performSearch() {
             const query = document.getElementById('search-bar').value.toUpperCase();
-            const sections = document.querySelectorAll('.section');
+            const sections = document.querySelectorAll('.subject-item, .resource-item, #home, #contact');
+            if (!query) {
+                sections.forEach(section => section.style.display = '');
+                return;
+            }
             sections.forEach(section => {
                 if (section.innerText.toUpperCase().includes(query)) {
                     section.style.display = '';
@@ -125,5 +153,24 @@
             });
         }
     </script>
+    <style>
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
 </body>
 </html>
