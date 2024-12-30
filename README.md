@@ -1,6 +1,4 @@
-<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +14,6 @@
     <title>Class 10 Study Hub</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <header>
         <div class="container">
@@ -29,6 +26,10 @@
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Search...">
+                <button id="search-btn" onclick="performSearch()">🔍</button>
+            </div>
         </div>
     </header>
     <section id="home" class="section">
@@ -96,7 +97,7 @@
         <h2>Contact Us</h2>
         <p>Email: support@class10studyhub.com</p>
     </section>
-    <button id="back-to-top" class="back-to-top">Back to Top</button>
+    <button id="back-to-top" class="back-to-top">⬆️</button>
     <footer>
         <p>&copy; 2024 Class 10 Study Hub</p>
     </footer>
@@ -112,6 +113,17 @@
         backToTopBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+        function performSearch() {
+            const query = document.getElementById('search-bar').value.toUpperCase();
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                if (section.innerText.toUpperCase().includes(query)) {
+                    section.style.display = '';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
     </script>
 </body>
 </html>
