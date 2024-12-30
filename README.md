@@ -90,7 +90,7 @@
             </div>
             <div class="resource-item">
                 <h3>Time Management Tips</h3>
-                <a href="#">Read Tips</a>
+                <a href="time management tips.html">Read Tips</a>
             </div>
         </div>
     </section>
