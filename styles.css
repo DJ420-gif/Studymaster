@@ -34,6 +34,22 @@ header nav a:hover {
     text-decoration: underline;
 }
 
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+#search-bar {
+    padding: 5px;
+}
+
+#search-btn {
+    padding: 5px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+}
+
 .section {
     width: 90%;
     margin: 40px auto;
