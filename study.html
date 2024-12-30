@@ -82,7 +82,7 @@
         <div class="resource-list">
             <div class="resource-item">
                 <h3>Previous Year Papers</h3>
-                <a href="#">Download Previous Year Papers</a>
+                <a href="previousyearpapers.html">Download Previous Year Papers</a>
             </div>
             <div class="resource-item">
                 <h3>Sample Papers</h3>
