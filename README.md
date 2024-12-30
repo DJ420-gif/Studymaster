@@ -20,13 +20,13 @@
         <div class="container">
             <h1>Class 10 Study Hub</h1>
             <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#subjects">Subjects</a></li>
-                    <li><a href="#resources">Resources</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#subjects">Subjects</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
             <div class="search-container">
                 <input type="text" id="search-bar" placeholder="Search chapters...">
                 <button id="search-btn" onclick="performSearch()">🔍</button>
