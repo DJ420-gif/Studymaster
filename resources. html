@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Class 10 Study Hub - Resources for Class 10 Notes, Solutions, Quick Notes, and Image Notes.">
+    <meta name="keywords" content="Class 10 resources, Class 10 notes, Class 10 solutions, Class 10 quick notes, Class 10 image notes">
+    <meta name="author" content="Class 10 Study Hub">
+    <title>Resources - Class 10 Study Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Class 10 Study Hub</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#subjects">Subjects</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section class="hero-section">
+        <h2>Class 10 Study Hub</h2>
+        <p>Your one-stop destination for all Class 10 Resources</p>
+    </section>
+    <section class="resources">
+        <h2>Resources</h2>
+        <div class="card-container">
+            <div class="card">
+                <img src="ncert-notes-graphic.png" alt="Class 10 NCERT Notes Graphic">
+                <h3>Class 10 NCERT Notes</h3>
+                <p>Comprehensive notes for all Class 10 NCERT subjects. Simplify your study with detailed explanations.</p>
+                <a href="ncert-notes.html" class="btn">View Notes</a>
+            </div>
+            <div class="card">
+                <img src="ncert-solutions-graphic.png" alt="Class 10 NCERT Solutions Graphic">
+                <h3>Class 10 NCERT Solutions</h3>
+                <p>Step-by-step solutions for NCERT textbooks to help you excel in exams with confidence.</p>
+                <a href="ncert-solutions.html" class="btn">View Solutions</a>
+            </div>
+            <div class="card">
+                <img src="quick-notes-graphic.png" alt="Class 10 Quick Notes Graphic">
+                <h3>Class 10 Quick Notes</h3>
+                <p>Concise notes designed for quick revisions and last-minute preparations.</p>
+                <a href="quick-notes.html" class="btn">View Quick Notes</a>
+            </div>
+            <div class="card">
+                <img src="image-notes-graphic.png" alt="Class 10 NCERT Image Notes Graphic">
+                <h3>Class 10 NCERT Image Notes</h3>
+                <p>Visual learning with image-based notes, including mind maps and diagrams.</p>
+                <a href="image-notes.html" class="btn">View Image Notes</a>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Class 10 Study Hub</p>
+    </footer>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #333;
+            color: white;
+            padding: 10px 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .hero-section {
+            text-align: center;
+            background: #f4f4f4;
+            padding: 50px 20px;
+        }
+
+        .hero-section h2 {
+            font-size: 32px;
+        }
+
+        .resources {
+            width: 80%;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .resources h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+
+        .card img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .card .btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .card .btn:hover {
+            background: #0056b3;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            background: #333;
+            color: white;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+</body>
+</html>
