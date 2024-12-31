@@ -163,7 +163,6 @@
                 <input type="text" id="search-bar" placeholder="Search chapters...">
                 <button id="search-btn" onclick="performSearch()">🔍</button>
             </div>
-        </div>
     </header>
     <section id="home" class="section">
         <h2>Welcome to Class 10 Study Hub</h2>
