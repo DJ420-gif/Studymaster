@@ -169,14 +169,6 @@
         <h2>Welcome to Class 10 Study Hub</h2>
         <p>Your one-stop destination for Class 10 study materials, notes, and solutions!</p>
     </section>
-    <nav>
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="#subjects">Subjects</a></li>
-        <li><a href="resources.html">Resources</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
-</nav>
     <section id="subjects" class="section">
         <h2>Subjects</h2>
         <div class="subject-list">
