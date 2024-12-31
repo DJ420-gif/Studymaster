@@ -90,19 +90,82 @@
   "keywords": "Class 10 study materials, Class 10 notes, board exam preparation, Math, Science, English, Social Studies"
 }
 </script>
+      <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Green card container */
+        .menu-card {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Navigation menu styling */
+        .menu-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-card li {
+            margin: 10px 0;
+        }
+
+        .menu-card a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            display: inline-block;
+            border: 2px solid white;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .menu-card a:hover {
+            background-color: white;
+            color: #4CAF50;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 768px) {
+            .menu-card {
+                padding: 15px;
+                max-width: 90%;
+            }
+
+            .menu-card a {
+                font-size: 1rem;
+                padding: 10px;
+            }
+        }
+      </style>
 </head>
 <body>
     <header>
         <div class="container">
             <h1>Class 10 Study Hub</h1>
-            <nav>
+            <nav> </nav> </div>
+       <div class="menu-card">
     <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="#subjects">Subjects</a></li>
         <li><a href="resources.html">Resources</a></li>
         <li><a href="#contact">Contact</a></li>
     </ul>
-</nav>
+       </div>
             <div class="search-container">
                 <input type="text" id="search-bar" placeholder="Search chapters...">
                 <button id="search-btn" onclick="performSearch()">🔍</button>
@@ -268,3 +331,83 @@ menuIcon.addEventListener('click', () => {
     </style>
 </body>
     </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile-Friendly Navigation Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Green card container */
+        .menu-card {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Navigation menu styling */
+        .menu-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-card li {
+            margin: 10px 0;
+        }
+
+        .menu-card a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            display: inline-block;
+            border: 2px solid white;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .menu-card a:hover {
+            background-color: white;
+            color: #4CAF50;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 768px) {
+            .menu-card {
+                padding: 15px;
+                max-width: 90%;
+            }
+
+            .menu-card a {
+                font-size: 1rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-card">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#subjects">Subjects</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+</body>
+</html>
