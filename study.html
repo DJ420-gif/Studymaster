@@ -152,6 +152,16 @@
                 }
             });
         }
+        const menuIcon = document.createElement('div');
+menuIcon.className = 'menu-icon';
+menuIcon.innerText = '☰';
+
+document.querySelector('header .container').prepend(menuIcon);
+
+menuIcon.addEventListener('click', () => {
+    const navMenu = document.querySelector('nav ul');
+    navMenu.classList.toggle('show');
+});
     </script>
     <style>
         #modal {
