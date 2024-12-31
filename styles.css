@@ -3,6 +3,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
+    font-size: 14px; /* Reduced for better readability on mobile */
 }
 
 header {
@@ -18,37 +19,54 @@ header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap; /* Adjust for smaller screens */
+    flex-wrap: wrap;
 }
 
 header nav ul {
     list-style-type: none;
-    display: flex;
-    gap: 10px; /* Reduce gap for smaller screens */
-    flex-wrap: wrap; /* Wrap items on small screens */
-    justify-content: center;
+    display: none; /* Hidden by default for mobile */
+    flex-direction: column; /* Stacked links */
+    background-color: #4CAF50;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
     padding: 0;
+    margin: 0;
+}
+
+header nav ul.show {
+    display: flex; /* Show menu when toggled */
 }
 
 header nav a {
     color: white;
     text-decoration: none;
-    font-size: 14px; /* Adjust font size */
+    font-size: 14px;
+    padding: 10px 20px;
+    display: block;
 }
 
 header nav a:hover {
     text-decoration: underline;
 }
 
+.menu-icon {
+    display: block;
+    cursor: pointer;
+    font-size: 20px;
+}
+
 .search-container {
     display: flex;
     align-items: center;
-    justify-content: center; /* Center search bar on smaller screens */
+    justify-content: center;
 }
 
-#search-bar { 
+#search-bar {
     padding: 5px;
-    width: 70%; /* Adjust width for smaller screens */
+    width: 90%; /* Full width for mobile */
+    max-width: 300px; /* Limit width for larger screens */
 }
 
 #search-btn {
@@ -59,23 +77,23 @@ header nav a:hover {
 }
 
 .section {
-    width: 95%; /* Adjust width for smaller screens */
-    margin: 20px auto; /* Reduce margin */
-    padding: 15px; /* Reduce padding */
+    width: 95%;
+    margin: 20px auto;
+    padding: 15px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.subject-list {
+.subject-list, .resource-list {
     display: flex;
-    gap: 10px; /* Reduce gap */
-    flex-wrap: wrap; /* Wrap items on small screens */
+    gap: 10px;
+    flex-wrap: wrap;
     justify-content: center;
 }
 
-.subject-item {
-    width: 45%; /* Adjust width for smaller screens */
-    margin-bottom: 20px; /* Add space between items */
+.subject-item, .resource-item {
+    width: 100%; /* Full width for mobile */
+    margin-bottom: 20px;
     background-color: #f4f4f4;
     padding: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -83,7 +101,7 @@ header nav a:hover {
 
 .subject-item h3 {
     color: #4CAF50;
-    font-size: 16px; /* Adjust font size */
+    font-size: 16px;
 }
 
 .subject-item ul {
@@ -98,36 +116,43 @@ header nav a:hover {
 .subject-item a {
     color: #333;
     text-decoration: none;
-    font-size: 14px; /* Adjust font size */
+    font-size: 14px;
 }
 
 .subject-item a:hover {
     color: #4CAF50;
 }
 
-.resource-list {
-    display: flex;
-    gap: 10px; /* Reduce gap */
-    flex-wrap: wrap; /* Wrap items */
-    justify-content: center; /* Center resources on small screens */
-}
-
-.resource-item {
-    width: 45%; /* Adjust width for smaller screens */
-    margin-bottom: 20px; /* Add spacing */
-    background-color: #f4f4f4;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
 .resource-item a {
     color: #4CAF50;
     text-decoration: none;
-    font-size: 14px; /* Adjust font size */
+    font-size: 14px;
 }
 
 .resource-item a:hover {
     text-decoration: underline;
+}
+
+#modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 90%; /* Adjust for smaller screens */
+    max-height: 80%; /* Prevent overflow */
+    overflow-y: auto;
+    text-align: center;
 }
 
 .back-to-top {
@@ -157,14 +182,14 @@ footer p {
 /* Mobile Styles */
 @media (max-width: 768px) {
     header .container {
-        flex-direction: column; /* Stack elements */
+        flex-direction: column;
     }
 
-    .subject-item, .resource-item {
-        width: 100%; /* Full width for items */
+    .menu-icon {
+        display: block;
     }
 
-    #search-bar {
-        width: 90%; /* Full width for the search bar */
+    nav ul {
+        flex-direction: column; /* Ensure links are vertical */
     }
-}
+    }
