@@ -8,11 +8,12 @@ body {
 header {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 0;
+    padding: 1rem 0;
+    text-align: center;
 }
 
 header .container {
-    width: 90%;
+    max-width: 600px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -39,7 +40,7 @@ header nav a:hover {
     align-items: center;
 }
 
-#search-bar {
+#search-bar { 
     padding: 5px;
 }
 
@@ -136,9 +137,5 @@ footer {
 
 footer p {
     margin: 0;
-}
-@media (max-width: 768px) {
-  
-}
-@media (max-width: 480px) {
+
   
