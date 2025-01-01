@@ -6,59 +6,8 @@
     <meta name="keywords" content="Class 10 resources, Class 10 notes, Class 10 solutions, Class 10 quick notes, Class 10 image notes">
     <meta name="author" content="Class 10 Study Hub">
     <title>Resources - Class 10 Study Hub</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Class 10 Study Hub</h1>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#subjects">Subjects</a></li>
-                    <li><a href="resources.html">Resources</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <section class="hero-section">
-        <h2>Class 10 Study Hub</h2>
-        <p>Your one-stop destination for all Class 10 Resources</p>
-    </section>
-    <section class="resources">
-        <h2>Resources</h2>
-        <div class="card-container">
-            <div class="card">
-                <img src="images/download - 2024-12-30T065624.636.jpeg" alt="Class 10 NCERT Notes Graphic">
-                <h3>Class 10 NCERT Notes</h3>
-                <p>Comprehensive notes for all Class 10 NCERT subjects. Simplify your study with detailed explanations.</p>
-                <a href="ncert-notes.html" class="btn">View Notes</a>
-            </div>
-            <div class="card">
-                <img src="images/download - 2024-12-30T065439.541.jpeg" alt="Class 10 NCERT Solutions Graphic">
-                <h3>Class 10 NCERT Solutions</h3>
-                <p>Step-by-step solutions for NCERT textbooks to help you excel in exams with confidence.</p>
-                <a href="ncert-solutions.html" class="btn">View Solutions</a>
-            </div>
-            <div class="card">
-                <img src="images/download.png" alt="Class 10 Quick Notes Graphic">
-                <h3>Class 10 Quick Notes</h3>
-                <p>Concise notes designed for quick revisions and last-minute preparations.</p>
-                <a href="quick-notes.html" class="btn">View Quick Notes</a>
-            </div>
-            <div class="card">
-                <img src="images/71c06f2e-3869-4915-9511-8206a8d9739d.webp" alt="Class 10 NCERT Image Notes Graphic">
-                <h3>Class 10 NCERT Image Notes</h3>
-                <p>Visual learning with image-based notes, including mind maps and diagrams.</p>
-                <a href="image-notes.html" class="btn">View Image Notes</a>
-            </div>
-        </div>
-    </section>
-    <footer>
-        <p>&copy; 2024 Class 10 Study Hub</p>
-    </footer>
     <style>
+        /* General Body Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -66,14 +15,20 @@
             line-height: 1.6;
         }
 
+        /* Header and Navigation Styling */
         header {
             background: #333;
             color: white;
             padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .container {
-            width: 80%;
+            width: 90%;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -81,7 +36,8 @@
         }
 
         header h1 {
-            font-size: 24px;
+            font-size: 20px;
+            margin: 0;
         }
 
         nav ul {
@@ -89,17 +45,27 @@
             margin: 0;
             padding: 0;
             display: flex;
+            gap: 15px;
         }
 
         nav ul li {
-            margin-left: 20px;
+            display: inline-block;
         }
 
         nav ul li a {
             color: white;
             text-decoration: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        /* Hero Section */
         .hero-section {
             text-align: center;
             background: #f4f4f4;
@@ -110,6 +76,7 @@
             font-size: 32px;
         }
 
+        /* Resources Section */
         .resources {
             width: 80%;
             margin: 20px auto;
@@ -174,6 +141,7 @@
             transform: scale(1.05);
         }
 
+        /* Footer */
         footer {
             text-align: center;
             background: #333;
@@ -181,6 +149,76 @@
             padding: 10px 0;
             margin-top: 20px;
         }
+
+        /* Responsive Navigation */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+
+            nav ul li a {
+                width: 100%;
+                text-align: left;
+            }
+        }
     </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Class 10 Study Hub</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#subjects">Subjects</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section class="hero-section">
+        <h2>Class 10 Study Hub</h2>
+        <p>Your one-stop destination for all Class 10 Resources</p>
+    </section>
+    <section class="resources">
+        <h2>Resources</h2>
+        <div class="card-container">
+            <div class="card">
+                <img src="images/download - 2024-12-30T065624.636.jpeg" alt="Class 10 NCERT Notes Graphic">
+                <h3>Class 10 NCERT Notes</h3>
+                <p>Comprehensive notes for all Class 10 NCERT subjects. Simplify your study with detailed explanations.</p>
+                <a href="ncert-notes.html" class="btn">View Notes</a>
+            </div>
+            <div class="card">
+                <img src="images/download - 2024-12-30T065439.541.jpeg" alt="Class 10 NCERT Solutions Graphic">
+                <h3>Class 10 NCERT Solutions</h3>
+                <p>Step-by-step solutions for NCERT textbooks to help you excel in exams with confidence.</p>
+                <a href="ncert-solutions.html" class="btn">View Solutions</a>
+            </div>
+            <div class="card">
+                <img src="images/download.png" alt="Class 10 Quick Notes Graphic">
+                <h3>Class 10 Quick Notes</h3>
+                <p>Concise notes designed for quick revisions and last-minute preparations.</p>
+                <a href="quick-notes.html" class="btn">View Quick Notes</a>
+            </div>
+            <div class="card">
+                <img src="images/71c06f2e-3869-4915-9511-8206a8d9739d.webp" alt="Class 10 NCERT Image Notes Graphic">
+                <h3>Class 10 NCERT Image Notes</h3>
+                <p>Visual learning with image-based notes, including mind maps and diagrams.</p>
+                <a href="image-notes.html" class="btn">View Image Notes</a>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Class 10 Study Hub</p>
+    </footer>
 </body>
 </html>
