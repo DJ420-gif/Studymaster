@@ -3,23 +3,32 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
-    font-size: 14px; /* Reduced for better readability on mobile */
+    font-size: 14px; /* Reduced font size for better scaling */
 }
 
 header {
     background-color: #4CAF50;
     color: white;
-    padding: 1rem 0;
+    padding: 0.5rem 0; /* Reduced padding */
     text-align: center;
+    overflow: hidden; /* Prevents header content overflow */
 }
 
 header .container {
-    max-width: 600px;
+    max-width: 100%; /* Ensures it fits the screen width */
     margin: 0 auto;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+}
+
+header h1 {
+    font-size: 1.5rem; /* Reduced size of "Class 10 Study Hub" text */
+    margin: 0;
+    text-align: center;
+    width: 100%; /* Ensures it doesn't cause overflow */
+    word-wrap: break-word; /* Breaks text if too long */
 }
 
 header nav ul {
@@ -55,12 +64,14 @@ header nav a:hover {
     display: block;
     cursor: pointer;
     font-size: 20px;
+    padding: 5px;
 }
 
 .search-container {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%; /* Ensures it adjusts within the header */
 }
 
 #search-bar {
@@ -182,14 +193,26 @@ footer p {
 /* Mobile Styles */
 @media (max-width: 768px) {
     header .container {
-        flex-direction: column;
+        flex-direction: column; /* Stack header elements */
+    }
+
+    header h1 {
+        font-size: 1.2rem; /* Further reduced size for mobile */
     }
 
     .menu-icon {
-        display: block;
+        display: block; /* Display hamburger menu */
     }
 
     nav ul {
-        flex-direction: column; /* Ensure links are vertical */
+        flex-direction: column;
     }
+
+    .subject-item, .resource-item {
+        width: 100%; /* Full width for items */
     }
+
+    #search-bar {
+        width: 90%; /* Full width for the search bar */
+    }
+}
