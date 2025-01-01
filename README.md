@@ -211,100 +211,83 @@
     <footer>
         <p>&copy; 2024 Class 10 Study Hub</p>
     </footer>
-    <script>
-        const backToTopBtn = document.getElementById('back-to-top');
-        window.onscroll = () => {
-            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-                backToTopBtn.style.display = 'block';
+    
+<script>
+    // Show options modal
+    function showOptions(chapter) {
+        const options = `
+            <h2>${chapter}</h2>
+            <ul style="list-style: none; padding: 0; font-size: 18px;">
+                <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">📄 Notes</a></li>
+                <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">📘 Solutions</a></li>
+                <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">📝 Tests</a></li>
+                <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">🎥 Videos</a></li>
+                <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">📂 Related Resources</a></li>
+            </ul>
+            <button style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;" onclick="closeModal()">Close</button>
+        `;
+        const modal = document.createElement('div');
+        modal.id = 'modal';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '1000';
+
+        const modalContent = document.createElement('div');
+        modalContent.style.backgroundColor = '#fff';
+        modalContent.style.padding = '30px';
+        modalContent.style.borderRadius = '10px';
+        modalContent.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+        modalContent.style.textAlign = 'center';
+        modalContent.style.width = '80%';
+        modalContent.style.maxWidth = '500px';
+        modalContent.innerHTML = options;
+
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
+    }
+
+    // Close modal
+    function closeModal() {
+        const modal = document.getElementById('modal');
+        if (modal) modal.remove();
+    }
+
+    // Perform search
+    function performSearch() {
+        const query = document.getElementById('search-bar').value.toUpperCase();
+        const sections = document.querySelectorAll('.subject-item, .resource-item, #home, #contact');
+        if (!query) {
+            sections.forEach(section => (section.style.display = ''));
+            return;
+        }
+        sections.forEach(section => {
+            if (section.innerText.toUpperCase().includes(query)) {
+                section.style.display = '';
             } else {
-                backToTopBtn.style.display = 'none';
+                section.style.display = 'none';
             }
-        };
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-        function showOptions(chapter) {
-    const options = `
-        <h2>${chapter}</h2>
-        <ul style="list-style: none; padding: 0; font-size: 18px;">
-            <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">📄 Notes</a></li>
-            <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">📘 Solutions</a></li>
-            <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">📝 Tests</a></li>
-            <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">🎥 Videos</a></li>
-            <li><a href="#" style="color: #4CAF50; text-decoration: none; display: block; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0;">📂 Related Resources</a></li>
-        </ul>
-        <button style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;" onclick="closeModal()">Close</button>
-    `;
-    const modal = document.createElement('div');
-    modal.id = 'modal';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-    modal.style.display = 'flex';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
-    modal.style.zIndex = '1000';
-    const modalContent = document.createElement('div');
-    modalContent.style.backgroundColor = '#fff';
-    modalContent.style.padding = '30px';
-    modalContent.style.borderRadius = '10px';
-    modalContent.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-    modalContent.style.textAlign = 'center';
-    modalContent.style.width = '80%';
-    modalContent.style.maxWidth = '500px';
-    modalContent.innerHTML = options;
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
-}
+    }
 
-function closeModal() {
-    const modal = document.getElementById('modal');
-    if (modal) modal.remove();
-}
-            const modal = document.createElement('div');
-            modal.id = 'modal';
-            modal.innerHTML = 
-                <div class="modal-content">
-                    ${options}
-                    <button onclick="closeModal()">Close</button>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-        function closeModal() {
-            const modal = document.getElementById('modal');
-            if (modal) modal.remove();
-        }
-        function performSearch() {
-            const query = document.getElementById('search-bar').value.toUpperCase();
-            const sections = document.querySelectorAll('.subject-item, .resource-item, #home, #contact');
-            if (!query) {
-                sections.forEach(section => section.style.display = '');
-                return;
-            }
-            sections.forEach(section => {
-                if (section.innerText.toUpperCase().includes(query)) {
-                    section.style.display = '';
-                } else {
-                    section.style.display = 'none';
-                }
-            });
-        }
-        const menuIcon = document.createElement('div');
-menuIcon.className = 'menu-icon';
-menuIcon.innerText = '☰';
+    // Responsive menu toggle
+    const menuIcon = document.createElement('div');
+    menuIcon.className = 'menu-icon';
+    menuIcon.innerText = '☰';
+    document.querySelector('header .container').prepend(menuIcon);
 
-document.querySelector('header .container').prepend(menuIcon);
-
-menuIcon.addEventListener('click', () => {
-    const navMenu = document.querySelector('nav ul');
-    navMenu.classList.toggle('show');
-});
-    </script>
-    <style>
+    menuIcon.addEventListener('click', () => {
+        const navMenu = document.querySelector('nav ul');
+        navMenu.classList.toggle('show');
+    });
+</script>
+ <style>
         #modal {
             position: fixed;
             top: 0;
