@@ -152,6 +152,9 @@
             <div class="subject-item">
                 <h3>Math</h3>
                 <ul>
+                    <a href="https://drive.google.com/uc?export=download&id=13jKBtcFebvHlEgEwE2xwHeABiePQI6n1/view?usp=drivesdk" target="_blank">
+   Download MTG sample paper Math solutions
+                    </a>
                     <li><a href="#" onclick="showOptions('Math - Real Numbers')">Real Numbers</a></li>
                     <li><a href="#" onclick="showOptions('Math - Polynomials')">Polynomials</a></li>
                     <li><a href="#" onclick="showOptions('Math - Quadratic Equations')">Quadratic Equations</a></li>
@@ -174,6 +177,9 @@
             <div class="subject-item">
                 <h3>English</h3>
                 <ul>
+                    <a href="https://drive.google.com/uc?export=download&id=13qHrGQ0KuFes3AVBgyIOjAqRJUsbUaRj/view?usp=drivesdk" target="_blank">
+   Download MTG sample paper English solutions
+                    </a>
                     <li><a href="#" onclick="showOptions('English - The First Flight')">The First Flight</a></li>
                     <li><a href="#" onclick="showOptions('English - Footprints Without Feet')">Footprints Without Feet</a></li>
                     <li><a href="#" onclick="showOptions('English - Grammar')">Grammar</a></li>
@@ -182,6 +188,9 @@
             <div class="subject-item">
                 <h3>Social Science</h3>
                 <ul>
+                    <a href="https://drive.google.com/uc?export=download&fileid=13owVx-6zl1L3-EPTVvoGnFeDccUtljM9/view?usp=drivesdk" target="_blank">
+   Download MTG sample paper social science solutions
+                        </a>
                     <li><a href="#" onclick="showOptions('Social Science - History')">History</a></li>
                     <li><a href="#" onclick="showOptions('Social Science - Geography')">Geography</a></li>
                     <li><a href="#" onclick="showOptions('Social Science - Economics')">Economics</a></li>
