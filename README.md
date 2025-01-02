@@ -177,9 +177,7 @@
             <div class="subject-item">
                 <h3>English</h3>
                 <ul>
-                    <a href="https://drive.google.com/uc?export=download&id=13qHrGQ0KuFes3AVBgyIOjAqRJUsbUaRj/view?usp=drivesdk" target="_blank">
-   Download MTG sample paper English solutions
-                    </a>
+         <a href="https://drive.google.com/file/d/13qHrGQ0KuFes3AVBgyIOjAqRJUsbUaRj/view?usp=sharing" target="_blank">Download MTG sample paper English solutions </a>
                     <li><a href="#" onclick="showOptions('English - The First Flight')">The First Flight</a></li>
                     <li><a href="#" onclick="showOptions('English - Footprints Without Feet')">Footprints Without Feet</a></li>
                     <li><a href="#" onclick="showOptions('English - Grammar')">Grammar</a></li>
@@ -318,5 +316,21 @@
             text-align: center;
         }
     </style>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Links</title>
+</head>
+<body>
+    <h1>Download Links</h1>
+    <ul>
+        <li><a href="https://drive.google.com/file/d/13qHrGQ0KuFes3AVBgyIOjAqRJUsbUaRj/view?usp=sharing" target="_blank">Download Link 1</a></li>
+        <li><a href="https://drive.google.com/file/d/13jKBtcFebvHlEgEwE2xwHeABiePQI6n1/view?usp=sharing" target="_blank">Download Link 2</a></li>
+        <li><a href="https://drive.google.com/file/d/13owVx-6zl1L3-EPTVvoGnFeDccUtljM9/view?usp=sharing" target="_blank">Download Link 3</a></li>
+    </ul>
 </body>
 </html>
