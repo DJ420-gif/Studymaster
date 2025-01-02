@@ -177,7 +177,7 @@
             <div class="subject-item">
                 <h3>English</h3>
                 <ul>
-         <a href="https://drive.google.com/file/d/13qHrGQ0KuFes3AVBgyIOjAqRJUsbUaRj/view?usp=sharing" target="_blank">Download MTG sample paper English solutions </a>
+         <a href="https://drive.google.com/uc?export=download&id=13qHrGQ0KuFes3AVBgyIOjAqRJUsbUaRj" target="_blank">Download MTG sample paper English solutions </a>
                     <li><a href="#" onclick="showOptions('English - The First Flight')">The First Flight</a></li>
                     <li><a href="#" onclick="showOptions('English - Footprints Without Feet')">Footprints Without Feet</a></li>
                     <li><a href="#" onclick="showOptions('English - Grammar')">Grammar</a></li>
