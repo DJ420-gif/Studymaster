@@ -152,9 +152,6 @@
             <div class="subject-item">
                 <h3>Math</h3>
                 <ul>
-                    <a href="https://drive.google.com/uc?export=download&id=13VKQbz16iI8Hb4YF68ypG5N-2kWOmVPj" target="_blank">
-   Download MTG sample paper science solutions
-</a>
                     <li><a href="#" onclick="showOptions('Math - Real Numbers')">Real Numbers</a></li>
                     <li><a href="#" onclick="showOptions('Math - Polynomials')">Polynomials</a></li>
                     <li><a href="#" onclick="showOptions('Math - Quadratic Equations')">Quadratic Equations</a></li>
@@ -165,6 +162,9 @@
             <div class="subject-item">
                 <h3>Science</h3>
                 <ul>
+                    <a href="https://drive.google.com/uc?export=download&id=13VKQbz16iI8Hb4YF68ypG5N-2kWOmVPj" target="_blank">
+   Download MTG sample paper science solutions
+</a>
                     <li><a href="#" onclick="showOptions('Science - Chemical Reactions')">Chemical Reactions</a></li>
                     <li><a href="#" onclick="showOptions('Science - Acids, Bases, and Salts')">Acids, Bases, and Salts</a></li>
                     <li><a href="#" onclick="showOptions('Science - Life Processes')">Life Processes</a></li>
