@@ -186,7 +186,7 @@
             <div class="subject-item">
                 <h3>Social Science</h3>
                 <ul>
-                    <a href="https://drive.google.com/uc?export=download&fileid=13owVx-6zl1L3-EPTVvoGnFeDccUtljM9/view?usp=drivesdk" target="_blank">
+                    <a href="https://drive.google.com/uc?export=download&fileid=13owVx-6zl1L3-EPTVvoGnFeDccUtljM9" target="_blank">
    Download MTG sample paper social science solutions
                         </a>
                     <li><a href="#" onclick="showOptions('Social Science - History')">History</a></li>
