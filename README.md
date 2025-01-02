@@ -152,7 +152,7 @@
             <div class="subject-item">
                 <h3>Math</h3>
                 <ul>
-                    <a href="https://drive.google.com/uc?export=download&id=13jKBtcFebvHlEgEwE2xwHeABiePQI6n1/view?usp=drivesdk" target="_blank">
+                    <a href="https://drive.google.com/uc?export=download&id=13jKBtcFebvHlEgEwE2xwHeABiePQI6n1" target="_blank">
    Download MTG sample paper Math solutions
                     </a>
                     <li><a href="#" onclick="showOptions('Math - Real Numbers')">Real Numbers</a></li>
