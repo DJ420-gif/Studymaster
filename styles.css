@@ -35,7 +35,7 @@ header nav ul {
     list-style-type: none;
     display: none; /* Hidden by default for mobile */
     flex-direction: column; /* Stacked links */
-    background-color: #2575fc;
+    background-color: linear-gradient(135deg, #6a11cb, #2575fc);
     position: absolute;
     top: 60px;
     left: 0;
@@ -49,7 +49,7 @@ header nav ul.show {
 }
 
 header nav a {
-    color: white;
+    color: blue;
     text-decoration: none;
     font-size: 14px;
     padding: 10px 20px;
