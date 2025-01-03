@@ -111,7 +111,7 @@ header nav a:hover {
 }
 
 .subject-item h3 {
-    color: #4CAF50;
+    color: linear-gradient(135deg, #6a11cb, #2575fc);
     font-size: 16px;
 }
 
@@ -131,7 +131,7 @@ header nav a:hover {
 }
 
 .subject-item a:hover {
-    color: #4CAF50;
+    color: linear-gradient(135deg, #6a11cb, #2575fc);
 }
 
 .resource-item a {
