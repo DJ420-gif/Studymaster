@@ -82,7 +82,8 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: #f0f8ff;
+            background: linear-gradient(to bottom, #b2f2ff, #e5fcf1); 
+            color: #333; 
         }
         /* Green card container */
         .menu-card {
@@ -163,7 +164,7 @@
 
   /* Resource section cards */
   .resource-item {
-      background: #ffe0b2; /* Light orange */
+      background: linear-gradient(to bottom right, #cce7ff, #eaf5ff);  
       padding: 20px;
       margin: 10px 0;
       border-radius: 10px;
@@ -172,7 +173,7 @@
   }
 
   .resource-item a {
-      color: #e65100; /* Dark orange for text */
+      color: #0056b3;
       font-weight: bold;
       text-decoration: none;
       display: inline-block;
@@ -183,9 +184,9 @@
       transition: all 0.3s;
   }
 
-  .resource-item a:hover {
-      background-color: #fb8c00; /* Dark orange hover */
-      color: white;
+.resource-item:hover {
+        transform: scale(1.05); /* Subtle zoom effect */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhance hover effect */
   }
 
   /* Footer */
@@ -416,21 +417,5 @@
             text-align: center;
         }
     </style>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Links</title>
-</head>
-<body>
-    <h1>Download Links</h1>
-    <ul>
-        <li><a href="https://drive.google.com/file/d/13qHrGQ0KuFes3AVBgyIOjAqRJUsbUaRj/view?usp=sharing" target="_blank">Download Link 1</a></li>
-        <li><a href="https://drive.google.com/file/d/13jKBtcFebvHlEgEwE2xwHeABiePQI6n1/view?usp=sharing" target="_blank">Download Link 2</a></li>
-        <li><a href="https://drive.google.com/file/d/13owVx-6zl1L3-EPTVvoGnFeDccUtljM9/view?usp=sharing" target="_blank">Download Link 3</a></li>
-    </ul>
 </body>
 </html>
