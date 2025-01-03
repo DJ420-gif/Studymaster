@@ -35,7 +35,7 @@ header nav ul {
     list-style-type: none;
     display: none; /* Hidden by default for mobile */
     flex-direction: column; /* Stacked links */
-    background-color: #6a11cb;
+    background-color: #4CAF50 
     position: absolute;
     top: 60px;
     left: 0;
