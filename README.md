@@ -77,7 +77,7 @@
         }
         /* Green card container */
         .menu-card {
-            background-color: #1947D2
+            background-color: #1947d2
             color: white;
             padding: 20px;
             margin: 20px auto;
@@ -109,7 +109,7 @@
         }
         .menu-card a:hover {
             background-color: white;
-            color: #1947D2
+            color: #1947d2
         }
         /* Responsive styling */
         @media (max-width: 768px) {
