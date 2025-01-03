@@ -73,7 +73,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
+            background: linear-gradient(135deg, #3F51B5, #5C6BC0);
         }
         /* Green card container */
         .menu-card {
