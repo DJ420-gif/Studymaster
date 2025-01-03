@@ -411,7 +411,7 @@ footer p {
             </div>
             <div class="resource-item">
                 <h3>Sample Papers</h3>
-                <a href="#">Download Sample Papers. Our sample papers are curated by experts by analysing pattern of board. </a>
+                <a href="class-10-sample-papers.html">Download Sample Papers. Our sample papers are curated by experts by analysing pattern of board. </a>
             </div>
             <div class="resource-item">
                 <h3>Time Management Tips</h3>
