@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 10 NCERT Notes - Class 10 Study Hub</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f7fb;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2196F3, #64B5F6);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        header nav ul li a:hover {
+            color: #BBDEFB;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: url('images/ncert-notes-hero.jpg') no-repeat center center/cover;
+            color: white;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h2 {
+            font-size: 2.8rem;
+            margin: 0;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            padding: 3rem 1rem;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: auto;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .content-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .subjects {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .subjects div {
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2196F3;
+            transition: color 0.3s;
+        }
+
+        .subjects div:hover {
+            color: #64B5F6;
+        }
+
+        .chapters {
+            display: none;
+            margin-top: 1rem;
+            padding-left: 1rem;
+            list-style: none;
+            text-align: left;
+        }
+
+        .chapters li {
+            margin-bottom: 0.5rem;
+        }
+
+        .chapters li a {
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        .chapters li a:hover {
+            color: #64B5F6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #2196F3;
+            color: white;
+            margin-top: 2rem;
+        }
+    </style>
+    <script>
+        function toggleChapters(id) {
+            const chapters = document.getElementById(id);
+            const allChapters = document.querySelectorAll('.chapters');
+            allChapters.forEach(chapter => {
+                if (chapter !== chapters) chapter.style.display = 'none';
+            });
+            chapters.style.display = chapters.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Class 10 Study Hub</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Class 10 NCERT Notes</h2>
+            <p>Your one-stop solution for comprehensive and exam-focused Class 10 NCERT notes!</p>
+        </div>
+    </section>
+    <section class="content-section">
+        <div class="content-container">
+            <p>Our Class 10 NCERT notes are designed to provide concise and accurate content, perfectly tailored to meet the requirements of board exams. These notes cover all key concepts, provide clear explanations, and include tips for quick revision. With our notes, students can save time, enhance understanding, and boost their exam confidence. Each chapter is structured to simplify complex topics and make studying more effective.</p>
+            <img src="images/images - 2025-01-01T171220.855.jpeg" alt="Class 10 NCERT Notes">
+        </div>
+        <div class="subjects">
+            <div onclick="toggleChapters('science')">Science</div>
+            <ul class="chapters" id="science">
+                <li><a href="class10notes/chemicalreactionsandequationsnotes.html">Class 10 Science Sample Papers set 1</a></li>
+                <li><a href="science-chapter2.html">Chapter 2: Acids, Bases, and</a></li>
+                <li><a href="science-chapter3.html">Chapter 3: Metals and Non-Metals</a></li>
+            </ul>
+            <div onclick="toggleChapters('math')">Mathematics</div>
+            <ul class="chapters" id="math">
+                <li><a href="math-chapter1.html">Chapter 1: Real Numbers</a></li>
+                <li><a href="math-chapter2.html">Chapter 2: Polynomials</a></li>
+                <li><a href="math-chapter3.html">Chapter 3: Pair of Linear Equations</a></li>
+            </ul>
+            <div onclick="toggleChapters('social-science')">Social Science</div>
+            <ul class="chapters" id="social-science">
+                <li><a href="social-science-chapter1.html">Chapter 1: Resources and Development</a></li>
+                <li><a href="social-science-chapter2.html">Chapter 2: Forest and Wildlife Resources</a></li>
+                <li><a href="social-science-chapter3.html">Chapter 3: Water Resources</a></li>
+            </ul>
+          <div onclick="toggleChapter('English')">English</div> 
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Class 10 Study Hub</p>
+    </footer>
+</body>
+</html>
