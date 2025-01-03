@@ -109,7 +109,7 @@
         }
         .menu-card a:hover {
             background-color: white;
-            color: #4CAF50;
+            color: #1947D2
         }
         /* Responsive styling */
         @media (max-width: 768px) {
