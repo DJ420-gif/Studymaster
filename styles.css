@@ -7,7 +7,7 @@ body {
 }
 
 header {
-    background-color: #4CAF50 
+    background-color: linear-gradient(135deg, #6a11cb, #2575fc);
     color: white;
     padding: 0.5rem 0; /* Reduced padding */
     text-align: center;
@@ -105,7 +105,7 @@ header nav a:hover {
 .subject-item, .resource-item {
     width: 100%; /* Full width for mobile */
     margin-bottom: 20px;
-    background-color: #4CAF50;
+    background-color: #000000;
     padding: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
