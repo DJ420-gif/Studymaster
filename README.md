@@ -77,16 +77,16 @@
 
   gtag('config', 'G-SWPWBWH4BZ');
 </script>
-      <style>
+<style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #3F51B5, #5C6BC0);
+            background: #f0f8ff;
         }
         /* Green card container */
         .menu-card {
-            background: linear-gradient(135deg, #3F51B5, #5C6BC0); 
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: white;
             padding: 20px;
             margin: 20px auto;
@@ -104,6 +104,7 @@
         .menu-card li {
             margin: 10px 0;
         }
+
         .menu-card a {
             color: white;
             text-decoration: none;
@@ -116,21 +117,111 @@
             width: 100%;
             box-sizing: border-box;
         }
+
         .menu-card a:hover {
             background-color: white;
-            color: #1947d2
+            color: #6a11cb;
         }
+
         /* Responsive styling */
         @media (max-width: 768px) {
             .menu-card {
                 padding: 15px;
                 max-width: 90%;
             }
+
             .menu-card a {
                 font-size: 1rem;
                 padding: 10px;
             }
         }
+      /* Subject section */
+  .subject-item h3 {
+      color: #4CAF50; /* Light green heading */
+  }
+
+  .subject-list ul {
+      padding: 0;
+  }
+
+  .subject-list li a {
+      display: block;
+      padding: 10px;
+      color: #0078D4; /* Bright blue links */
+      background-color: #e6f7ff; /* Light blue background */
+      border: 1px solid #b3e5fc; /* Border to match */
+      border-radius: 8px;
+      margin: 5px 0;
+      text-decoration: none;
+      transition: all 0.3s;
+  }
+
+  .subject-list li a:hover {
+      background-color: #d1f0ff; /* Slightly darker hover effect */
+      color: #003e82;
+  }
+
+  /* Resource section cards */
+  .resource-item {
+      background: #ffe0b2; /* Light orange */
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+  }
+
+  .resource-item a {
+      color: #e65100; /* Dark orange for text */
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: #ffcc80; /* Brighter orange button */
+      transition: all 0.3s;
+  }
+
+  .resource-item a:hover {
+      background-color: #fb8c00; /* Dark orange hover */
+      color: white;
+  }
+
+  /* Footer */
+  footer {
+      background-color: #003366; /* Dark navy */
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+  }
+
+  footer p {
+      margin: 0;
+      font-size: 0.9rem;
+  }
+
+  /* Back-to-top button */
+  #back-to-top {
+      background: #6a11cb; /* Gradient color */
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+  }
+
+  #back-to-top:hover {
+      background: #2575fc; /* Match the gradient */
       </style>
 </head>
 <body>
