@@ -253,14 +253,12 @@ Example:
     </div>
         <script>
         function toggleQuiz() {
-            const quizContainer = document.getElementById("quiz-container");
-            if (quizContainer.style.display === "none") {
-                quizContainer.style.display = "block";
-            } else {
-                quizContainer.style.display = "none";
-            }
-        }
-
+    const quizContainer = document.getElementById("quiz-container");
+    if (quizContainer.style.display === "none" || quizContainer.style.display === "") {
+        quizContainer.style.display = "block";
+    } else {
+        quizContainer.style.display = "none";
+    }
         function checkAnswers() {
             const answers = {
                 q1: "7",
