@@ -26,6 +26,58 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+           } 
+            .quiz-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: none;
+        }
+        .quiz-question {
+            margin-bottom: 20px;
+        }
+        .quiz-options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .quiz-options input {
+            margin-right: 10px;
+        }
+        .toggle-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .toggle-button:hover {
+            background-color: #003d80; 
+           } 
+        .submit-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-button:hover {
+            background-color: #003d80;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e7f7e7;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            border-radius: 5px;
+            display: none;
         }
         h1, h2, h3 {
             color: #0056b3;
@@ -149,16 +201,7 @@ Example:
             <li>Same with NaOH </li>
             <p class="reaction"> NaOH + H<sub>2</sub> &rarr; Na<sup>+</sup> + OH<sup>-</sup> </p>
               <li>Now all Bases do not dissolve in water like Cuo but the soluble ones are called Alkali. Alkali are soapy to touch, bitter in taste and corrosive in nature. Examples are Sodium Hydroxide, Potassium Hydroxide etc. are Alkali. </li>
-            <h3>How to dissolve Acid or Base in Water </h3>
-            <li>Acid should be dissolved in water slowly with constant stirring because when water is added to acid, the heat is released due to which the water evaporates and the water splashes out which causes burns. </li>
-            <li>But when the acid is added to water which also release heat but water absorbs it. </li>
-            <li> But why Adding water dilute the acid. Now when water is added to acid, the concentration of ions decrease which decrease the power of acid or base. </li>
-            <h3>How strong are acid and base </h3>
-            <li> Strongness of an acid or a base is the measure concentration of H<sup>+</sup> ions and H<sub>3</sub>O<sup>-</sup> respectively. To measure this there is a scale 
-            known as pH scale(p for potenz which means power). On the pH scale the 0 indicates the strong acid and it decrease as it increase and 14 indicates very alkaline. </li>
-            <li>Low pH value means more higher no. of H<sup>+</sup> ions and vice versa. </li>
-            <li>Table of compounds </li>
-            <h3> How pH can be important in everyday life </h3>
+            
 
         <h3>Practice Questions</h3>
         <ul>
@@ -169,5 +212,74 @@ Example:
 
         <a href="index.html" class="back-button">Go Back</a>
     </div>
+    !-- Toggle Button -->
+        <button class="toggle-button" onclick="toggleQuiz()">Show Quiz</button>
+
+        <!-- Quiz Section -->
+        <div class="quiz-container" id="quiz-container">
+            <h2>Test Your Knowledge</h2>
+            <div id="quiz">
+                <div class="quiz-question">
+                    <h3>1. What is the pH of a neutral solution?</h3>
+                    <div>
+                        <label><input type="radio" name="q1" value="6"> 6</label>
+                        <label><input type="radio" name="q1" value="7"> 7</label>
+                        <label><input type="radio" name="q1" value="8"> 8</label>
+                        <label><input type="radio" name="q1" value="10"> 10</label>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <h3>2. Which gas is released when acids react with metals?</h3>
+                    <div>
+                        <label><input type="radio" name="q2" value="Oxygen"> Oxygen</label>
+                        <label><input type="radio" name="q2" value="Hydrogen"> Hydrogen</label>
+                        <label><input type="radio" name="q2" value="Nitrogen"> Nitrogen</label>
+                        <label><input type="radio" name="q2" value="Carbon dioxide"> Carbon dioxide</label>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <h3>3. What is the taste of a base?</h3>
+                    <div>
+                        <label><input type="radio" name="q3" value="Sweet"> Sweet</label>
+                        <label><input type="radio" name="q3" value="Bitter"> Bitter</label>
+                        <label><input type="radio" name="q3" value="Sour"> Sour</label>
+                        <label><input type="radio" name="q3" value="Salty"> Salty</label>
+                    </div>
+                </div>
+                <button class="submit-button" onclick="checkAnswers()">Submit Quiz</button>
+                <div class="result" id="result"></div>
+            </div>
+        </div>
+    </div>
+        <script>
+        function toggleQuiz() {
+            const quizContainer = document.getElementById("quiz-container");
+            if (quizContainer.style.display === "none") {
+                quizContainer.style.display = "block";
+            } else {
+                quizContainer.style.display = "none";
+            }
+        }
+
+        function checkAnswers() {
+            const answers = {
+                q1: "7",
+                q2: "Hydrogen",
+                q3: "Bitter"
+            };
+            let score = 0;
+
+            for (const [question, correctAnswer] of Object.entries(answers)) {
+                const selectedOption = document.querySelector(`input[name="${question}"]:checked`);
+                if (selectedOption && selectedOption.value === correctAnswer) {
+                    score++;
+                }
+            }
+
+            const resultDiv = document.getElementById("result");
+            resultDiv.textContent = `You scored ${score} out of ${Object.keys(answers).length}`;
+            resultDiv.style.display = "block";
+        }
+        </script>
 </body>
   </html>
