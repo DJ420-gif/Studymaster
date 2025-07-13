@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Study Master - Live Chat</title>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <title>Study Master Chat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -57,11 +57,12 @@
   <input type="text" id="messageInput" placeholder="Type your message..." />
   <button onclick="sendMessage()">Send</button>
 </div>
-script type="module">
+
+<!-- ✅ Correct Firebase Script at End -->
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  // Firebase config from your project
   const firebaseConfig = {
     apiKey: "AIzaSyBVWmXx0DsEZpuyWIy9vjUmCZTxMKkicJs",
     authDomain: "studychat-e461e.firebaseapp.com",
@@ -77,19 +78,18 @@ script type="module">
   const db = getDatabase(app);
   const chatRef = ref(db, "chatroom");
 
-  // Allowed usernames
   const allowedUsers = ["djkumar", "My life"];
 
-  // Get username from URL or prompt
   const params = new URLSearchParams(window.location.search);
   let username = params.get("user") || prompt("Enter your username (only allowed users):");
 
   if (!allowedUsers.includes(username)) {
     alert("❌ Access Denied. Only authorized users can access this chat.");
-    document.body.innerHTML = "<h2 style='text-align:center;color:red;'>Access Denied</h2>";
+    document.body.innerHTML = "<h2 style='text-align:center;color:red;'>❌ Access Denied</h2>";
     throw new Error("Unauthorized user");
   }
-  // Show messages
+
+  // Listen for new messages
   onChildAdded(chatRef, (data) => {
     const msg = data.val();
     if (allowedUsers.includes(msg.user)) {
@@ -113,5 +113,6 @@ script type="module">
     }
   };
 </script>
+
 </body>
-  </html>
+</html>
