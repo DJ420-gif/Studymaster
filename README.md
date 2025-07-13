@@ -336,7 +336,7 @@ footer p {
             <nav> </nav> </div>
        <div class="menu-card">
     <ul>
-        <li><a href="studychat/index.html" class="chat-button">💬 Start Chat</a></li>
+        <li><a href="studychat/index2.html" class="chat-button">💬 Start Chat</a></li>
         <li><a href="index.html">Home</a></li>
         <li><a href="#subjects">Subjects</a></li>
         <li><a href="resources.html">Resources</a></li>
