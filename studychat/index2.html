@@ -220,31 +220,43 @@
       document.body.innerHTML = "<h2 style='text-align:center;color:red;'>❌ Access Denied</h2>";
       throw new Error("Unauthorized user");
     }
-
     onChildAdded(chatRef, (data) => {
-      const msg = data.val();
-      if (allowedUsers.includes(msg.user)) {
-        const msgElem = document.createElement("div");
-        msgElem.className = "message " + (msg.user === username ? "me" : "other");
-          msgElem.innerHTML = `
-  <span class="username">${msg.user}</span>
-  ${msg.text}
-  <div class="time">${msg.time || ''}</div>
-`;
-if (msg.user === username) {
-  msgElem.title = "Click to delete";
-  msgElem.style.cursor = "pointer";
-  msgElem.onclick = () => {
-    if (confirm("🗑️ Delete this message?")) {
-      const msgRef = ref(db, "chatroom/" + data.key);
-      remove(msgRef);
+  const msg = data.val();
+  const messageId = data.key; // ✅ Get the Firebase message key
+
+  if (allowedUsers.includes(msg.user)) {
+    const msgElem = document.createElement("div");
+    msgElem.className = "message " + (msg.user === username ? "me" : "other");
+
+    msgElem.innerHTML = `
+      <span class="username">${msg.user}</span>
+      ${msg.text}
+      <div class="time">${msg.time || ''}</div>
+    `;
+
+    // ✅ Only allow sender to delete their message
+    if (msg.user === username) {
+      msgElem.title = "Click to delete";
+      msgElem.style.cursor = "pointer";
+
+      msgElem.onclick = () => {
+        if (confirm("🗑️ Delete this message?")) {
+          const msgRef = ref(db, "chatroom/" + messageId); // ✅ Use stored key
+          remove(msgRef)
+            .then(() => {
+              msgElem.remove(); // ✅ Optional: immediately remove from UI
+            })
+            .catch((err) => {
+              alert("❌ Failed to delete: " + err.message);
+            });
+        }
+      };
     }
-  };
-}
-        document.getElementById("chatBox").appendChild(msgElem);
-        document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
-      }
-    });
+
+    document.getElementById("chatBox").appendChild(msgElem);
+    document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
+  }
+});
 
     window.sendMessage = function () {
   const input = document.getElementById("messageInput");
