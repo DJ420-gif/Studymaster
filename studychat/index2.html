@@ -7,7 +7,7 @@
 </head>
 <body>
   <h2>📩 Study Master Chat</h2>
-
+<h2><a id="topLinkButton" href="https://your-link.com" target="_blank">🔗 Open Link</a></h2>
   <div id="chatBox" class="chatBox"></div>
 
   <div id="inputArea">
@@ -190,6 +190,25 @@
   opacity: 0.95;
   background-color: #4f46e5cc;
     }
+    #topLinkButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #ef4444; /* red */
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: background 0.3s, transform 0.2s;
+}
+
+#topLinkButton:hover {
+  background-color: #dc2626; /* darker red */
+  transform: scale(1.05);
+      }
   </style>
 
   <script type="module">
