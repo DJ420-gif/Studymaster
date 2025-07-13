@@ -186,6 +186,10 @@
 .light .time {
   color: #555;
 }
+    .message:hover {
+  opacity: 0.95;
+  background-color: #4f46e5cc;
+    }
   </style>
 
   <script type="module">
@@ -227,6 +231,16 @@
   ${msg.text}
   <div class="time">${msg.time || ''}</div>
 `;
+if (msg.user === username) {
+  msgElem.title = "Click to delete";
+  msgElem.style.cursor = "pointer";
+  msgElem.onclick = () => {
+    if (confirm("🗑️ Delete this message?")) {
+      const msgRef = ref(db, "chatroom/" + data.key);
+      remove(msgRef);
+    }
+  };
+}
         document.getElementById("chatBox").appendChild(msgElem);
         document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
       }
