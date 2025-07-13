@@ -57,37 +57,48 @@
   <input type="text" id="messageInput" placeholder="Type your message..." />
   <button onclick="sendMessage()">Send</button>
 </div>
-
-<script type="module">
-  // Import Firebase SDK
+script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  // 🛡️ Replace these with your Firebase project details
+  // Firebase config from your project
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyBVWmXx0DsEZpuyWIy9vjUmCZTxMKkicJs",
+    authDomain: "studychat-e461e.firebaseapp.com",
+    projectId: "studychat-e461e",
+    databaseURL: "https://studychat-e461e-default-rtdb.firebaseio.com",
+    storageBucket: "studychat-e461e.appspot.com",
+    messagingSenderId: "983041382177",
+    appId: "1:983041382177:web:6933ef40f1c14e188f5060",
+    measurementId: "G-4R1VC4K1WE"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const chatRef = ref(db, "chatroom");
 
-  let username = prompt("Enter your username:");
+  // Allowed usernames
+  const allowedUsers = ["djkumar", "My life"];
 
-  // Listen for new messages
+  // Get username from URL or prompt
+  const params = new URLSearchParams(window.location.search);
+  let username = params.get("user") || prompt("Enter your username (only allowed users):");
+
+  if (!allowedUsers.includes(username)) {
+    alert("❌ Access Denied. Only authorized users can access this chat.");
+    document.body.innerHTML = "<h2 style='text-align:center;color:red;'>Access Denied</h2>";
+    throw new Error("Unauthorized user");
+  }
+  // Show messages
   onChildAdded(chatRef, (data) => {
     const msg = data.val();
-    const msgElem = document.createElement("div");
-    msgElem.className = "message";
-    msgElem.innerHTML = `<span class="${msg.user === username ? 'me' : 'other'}">${msg.user}:</span> ${msg.text}`;
-    document.getElementById("chatBox").appendChild(msgElem);
-    document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
+    if (allowedUsers.includes(msg.user)) {
+      const msgElem = document.createElement("div");
+      msgElem.className = "message";
+      msgElem.innerHTML = `<span class="${msg.user === username ? 'me' : 'other'}">${msg.user}:</span> ${msg.text}`;
+      document.getElementById("chatBox").appendChild(msgElem);
+      document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
+    }
   });
 
   // Send message
@@ -102,6 +113,5 @@
     }
   };
 </script>
-
 </body>
   </html>
