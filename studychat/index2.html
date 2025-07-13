@@ -153,6 +153,16 @@
       background-color: #ddd;
       color: #000;
     }
+    .time {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 6px;
+  text-align: right;
+}
+
+.light .time {
+  color: #555;
+}
   </style>
 
   <script type="module">
@@ -189,10 +199,11 @@
       if (allowedUsers.includes(msg.user)) {
         const msgElem = document.createElement("div");
         msgElem.className = "message " + (msg.user === username ? "me" : "other");
-        msgElem.innerHTML = `
-          <span class="username">${msg.user}</span>
-          ${msg.text}
-        `;
+          msgElem.innerHTML = `
+  <span class="username">${msg.user}</span>
+  ${msg.text}
+  <div class="time">${msg.time || ''}</div>
+`;
         document.getElementById("chatBox").appendChild(msgElem);
         document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
       }
