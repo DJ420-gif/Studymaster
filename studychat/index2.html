@@ -210,22 +210,23 @@
     });
 
     window.sendMessage = function () {
-      const input = document.getElementById("messageInput");
-      const text = input.value.trim();
-      if (!text) return;
+  const input = document.getElementById("messageInput");
+  const text = input.value.trim();
+  if (!text) return;
 
-      const currentTime = new Date().toLocaleTimeString([], {
-  hour: '2-digit',
-  minute: '2-digit'
-});
+  const currentTime = new Date().toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 
-push(chatRef, {
-  user: username,
-  text: text,
-  time: currentTime
-});
-      input.value = "";
-    };
+  push(chatRef, {
+    user: username,
+    text: text,
+    time: currentTime
+  });
+
+  input.value = "";
+};
 
     function toggleTheme() {
       document.body.classList.toggle("light");
