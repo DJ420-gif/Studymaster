@@ -1,1 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Study Master - Live Chat</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      padding: 20px;
+    }
+    #chatBox {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+      height: 500px;
+      overflow-y: auto;
+    }
+    .message {
+      margin: 5px 0;
+    }
+    .me {
+      color: blue;
+      font-weight: bold;
+    }
+    .other {
+      color: green;
+      font-weight: bold;
+    }
+    #inputArea {
+      max-width: 600px;
+      margin: auto;
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    input {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
 
+<h2 style="text-align:center">📚 Study Master Chat</h2>
+
+<div id="chatBox"></div>
+
+<div id="inputArea">
+  <input type="text" id="messageInput" placeholder="Type your message..." />
+  <button onclick="sendMessage()">Send</button>
+</div>
+
+<script type="module">
+  // Import Firebase SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  // 🛡️ Replace these with your Firebase project details
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const chatRef = ref(db, "chatroom");
+
+  let username = prompt("Enter your username:");
+
+  // Listen for new messages
+  onChildAdded(chatRef, (data) => {
+    const msg = data.val();
+    const msgElem = document.createElement("div");
+    msgElem.className = "message";
+    msgElem.innerHTML = `<span class="${msg.user === username ? 'me' : 'other'}">${msg.user}:</span> ${msg.text}`;
+    document.getElementById("chatBox").appendChild(msgElem);
+    document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
+  });
+
+  // Send message
+  window.sendMessage = function () {
+    const input = document.getElementById("messageInput");
+    if (input.value.trim() !== "") {
+      push(chatRef, {
+        user: username,
+        text: input.value.trim()
+      });
+      input.value = "";
+    }
+  };
+</script>
+
+</body>
+  </html>
