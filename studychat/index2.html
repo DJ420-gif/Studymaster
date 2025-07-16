@@ -21,7 +21,10 @@
 ">🧹 Clear Chat</button>
 <h2><a id="topLinkButton" href="https://www.selfstudys.com/mcq/jee/physics/online-test/29-motion-in-a-plane" target="_blank">🔗 Open Link</a></h2>
   <div id="chatBox" class="chatBox"></div>
-
+div id="replyBox" style="display:none;">
+  <small><b id="replyUser"></b>: <span id="replyText"></span></small>
+  <button onclick="cancelReply()" style="float:right;font-size:12px;">❌</button>
+</div>
   <div id="inputArea">
     <input
       type="text"
@@ -306,14 +309,23 @@ function clearAllMessages() {
     hour: '2-digit',
     minute: '2-digit'
   });
+const replyTo = document.getElementById("replyText").textContent;
+  const replyUser = document.getElementById("replyUser").textContent;
+  const isReplying = document.getElementById("replyBox").style.display === "block";
+
+  let fullMessage = text;
+  if (isReplying) {
+    fullMessage = `↪️ ${replyUser}: ${replyTo}\n${text}`;
+  }
 
   push(chatRef, {
     user: username,
-    text: text,
-    time: currentTime
+    text: fullMessage,
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   });
 
   input.value = "";
+  cancelReply(); // reset reply UI
 };
 
     function toggleTheme() {
