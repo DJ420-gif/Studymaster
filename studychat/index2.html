@@ -7,6 +7,7 @@
 </head>
 <body>
   <h2>📩 Study Master Chat</h2>
+  <button onclick="clearAllMessages()" style="background:red;color:white;border:none;padding:6px 12px;border-radius:6px;position:absolute;top:20px;left:20px;">🧹 Clear Chat</button>
 <h2><a id="topLinkButton" href="https://www.selfstudys.com/mcq/jee/physics/online-test/29-motion-in-a-plane" target="_blank">🔗 Open Link</a></h2>
   <div id="chatBox" class="chatBox"></div>
 
@@ -276,7 +277,15 @@
     document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
   }
 });
+    import { remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+function clearAllMessages() {
+  if (confirm("⚠️ Are you sure you want to delete all chat messages?")) {
+    remove(chatRef)
+      .then(() => alert("✅ All messages deleted!"))
+      .catch((err) => alert("❌ Error deleting: " + err.message));
+  }
+      }
     window.sendMessage = function () {
   const input = document.getElementById("messageInput");
   const text = input.value.trim();
