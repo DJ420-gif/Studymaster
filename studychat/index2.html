@@ -161,6 +161,17 @@
   font-style: italic;
   box-shadow: 0 0 6px rgba(0,0,0,0.4);
 }
+    .quoted {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 10px;
+  border-left: 4px solid #22c55e;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-style: italic;
+  color: #d1fae5;
+  white-space: pre-line;
+    }
     #inputArea {
       display: flex;
       max-width: 450px;
@@ -330,7 +341,7 @@
 
       let fullMessage = text;
       if (isReplying) {
-        fullMessage = `↪️ ${replyUser}: ${replyTo}\n${text}`;
+        fullMessage = `<div class="quoted">↪️ ${replyUser}: ${replyTo}</div>${text}`;
       }
 
       push(chatRef, {
