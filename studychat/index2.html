@@ -272,121 +272,115 @@
   transform: scale(1.1);
   }
   </style>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  <!-- 🔥 Firebase + Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWbXmXb0DsEZpuyWYv9yJUmCZTxMKKicJS",
+    authDomain: "studychat-e461e.firebaseapp.com",
+    databaseURL: "https://studychat-e461e-default-rtdb.firebaseio.com",
+    projectId: "studychat-e461e",
+    storageBucket: "studychat-e461e.appspot.com",
+    messagingSenderId: "983041821777",
+    appId: "1:983041821777:web:6933ef40f1c14e188f5060"
+  };
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBWbXmXb0DsEZpuyWYv9yJUmCZTxMKKicJS",
-      authDomain: "studychat-e461e.firebaseapp.com",
-      databaseURL: "https://studychat-e461e-default-rtdb.firebaseio.com",
-      projectId: "studychat-e461e",
-      storageBucket: "studychat-e461e.appspot.com",
-      messagingSenderId: "983041821777",
-      appId: "1:983041821777:web:6933ef40f1c14e188f5060"
-    };
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const chatRef = ref(db, "chatroom");
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const chatRef = ref(db, "chatroom");
+  const allowedUsers = ["djkumar", "My life"];
+  const params = new URLSearchParams(window.location.search);
+  let username = params.get("user") || prompt("Enter your username:");
 
-    const allowedUsers = ["djkumar", "My life"];
-    const params = new URLSearchParams(window.location.search);
-    let username = params.get("user") || prompt("Enter your username:");
+  if (!allowedUsers.includes(username)) {
+    alert("❌ Access Denied. Only authorized users can access this chat.");
+    document.body.innerHTML = "<h2 style='text-align:center;color:red;'>❌ Access Denied</h2>";
+    throw new Error("Unauthorized user");
+  }
 
-    if (!allowedUsers.includes(username)) {
-      alert("❌ Access Denied. Only authorized users can access this chat.");
-      document.body.innerHTML = "<h2 style='text-align:center;color:red;'>❌ Access Denied</h2>";
-      throw new Error("Unauthorized user");
+  onChildAdded(chatRef, (data) => {
+    const msg = data.val();
+    const key = data.key;
+
+    if (allowedUsers.includes(msg.user)) {
+      const msgElem = document.createElement("div");
+      msgElem.className = "message " + (msg.user === username ? "me" : "other");
+
+      msgElem.innerHTML = `
+        <span class="username">${msg.user}</span>
+        ${msg.text}
+        <div class="time">${msg.time || ''}</div>
+      `;
+
+      // Double-click to reply
+      msgElem.ondblclick = () => {
+        document.getElementById("replyBox").style.display = "block";
+        document.getElementById("replyUser").textContent = msg.user;
+        document.getElementById("replyText").textContent = msg.text;
+      };
+
+      // Click to delete your own message
+      if (msg.user === username) {
+        msgElem.style.cursor = "pointer";
+        msgElem.title = "Click to delete";
+        msgElem.onclick = () => {
+          if (confirm("🗑️ Delete this message?")) {
+            const delRef = ref(db, "chatroom/" + key);
+            remove(delRef)
+              .then(() => msgElem.remove())
+              .catch(err => alert("❌ Error: " + err.message));
+          }
+        };
+      }
+
+      document.getElementById("chatBox").appendChild(msgElem);
+      document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
+    }
+  });
+
+  window.sendMessage = function () {
+    const input = document.getElementById("messageInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    const replyTo = document.getElementById("replyText").textContent;
+    const replyUser = document.getElementById("replyUser").textContent;
+    const isReplying = document.getElementById("replyBox").style.display === "block";
+
+    let fullMessage = text;
+    if (isReplying) {
+      fullMessage = `<div class="quoted">↪️ ${replyUser}: ${replyTo}</div>${text}`;
     }
 
-    onChildAdded(chatRef, (data) => {
-      const msg = data.val();
-      const key = data.key;
-
-      if (allowedUsers.includes(msg.user)) {
-        const msgElem = document.createElement("div");
-        msgElem.className = "message " + (msg.user === username ? "me" : "other");
-
-        msgElem.innerHTML = `
-          <span class="username">${msg.user}</span>
-          ${msg.text}
-          <div class="time">${msg.time || ''}</div>
-        `;
-
-        // Reply on double click
-        msgElem.ondblclick = () => {
-          document.getElementById("replyBox").style.display = "block";
-          document.getElementById("replyUser").textContent = msg.user;
-          document.getElementById("replyText").textContent = msg.text;
-        };
-        
-  };
-  reader.readAsDataURL(file);
-});
-
-        // Allow delete for own messages
-        if (msg.user === username) {
-          msgElem.style.cursor = "pointer";
-          msgElem.title = "Click to delete";
-          msgElem.onclick = () => {
-            if (confirm("🗑️ Delete this message?")) {
-              const delRef = ref(db, "chatroom/" + key);
-              remove(delRef)
-                .then(() => msgElem.remove())
-                .catch(err => alert("❌ Error: " + err.message));
-            }
-          };
-        }
-
-        document.getElementById("chatBox").appendChild(msgElem);
-        document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
-      }
+    push(chatRef, {
+      user: username,
+      text: fullMessage,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     });
 
-    window.sendMessage = function () {
-      const input = document.getElementById("messageInput");
-      const text = input.value.trim();
-      if (!text) return;
+    input.value = "";
+    cancelReply();
+  };
 
-      const replyTo = document.getElementById("replyText").textContent;
-      const replyUser = document.getElementById("replyUser").textContent;
-      const isReplying = document.getElementById("replyBox").style.display === "block";
+  window.cancelReply = function () {
+    document.getElementById("replyBox").style.display = "none";
+    document.getElementById("replyUser").textContent = "";
+    document.getElementById("replyText").textContent = "";
+  };
 
-      let fullMessage = text;
-      if (isReplying) {
-        fullMessage = `<div class="quoted">↪️ ${replyUser}: ${replyTo}</div>${text}`;
-      }
+  function toggleTheme() {
+    document.body.classList.toggle("light");
+  }
 
-      push(chatRef, {
-        user: username,
-        text: fullMessage,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      });
-
-      input.value = "";
-      cancelReply();
-    };
-
-    window.cancelReply = function () {
-      document.getElementById("replyBox").style.display = "none";
-      document.getElementById("replyUser").textContent = "";
-      document.getElementById("replyText").textContent = "";
-    };
-
-    function toggleTheme() {
-      document.body.classList.toggle("light");
+  window.clearAllMessages = function () {
+    if (confirm("⚠️ Delete all chat messages?")) {
+      remove(chatRef)
+        .then(() => alert("✅ All messages deleted!"))
+        .catch(err => alert("❌ Error: " + err.message));
     }
-
-    window.clearAllMessages = function () {
-      if (confirm("⚠️ Delete all chat messages?")) {
-        remove(chatRef)
-          .then(() => alert("✅ All messages deleted!"))
-          .catch(err => alert("❌ Error: " + err.message));
-      }
-    };
-  </script>
+  };
+</script>
 </body>
   </html>
