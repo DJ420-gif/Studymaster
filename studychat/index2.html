@@ -324,14 +324,7 @@
           document.getElementById("replyUser").textContent = msg.user;
           document.getElementById("replyText").textContent = msg.text;
         };
-        document.getElementById("imageInput").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    const base64Image = event.target.result;
-
+        
     // Replace previous image by clearing chatroom first
     remove(chatRef).then(() => {
       push(chatRef, {
