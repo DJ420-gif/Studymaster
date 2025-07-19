@@ -37,8 +37,6 @@
   <div id="inputArea">
     <input type="text" id="messageInput" placeholder="Message..." onkeydown="if(event.key==='Enter') sendMessage()" />
     <button onclick="sendMessage()">➤</button>
-    <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-<button onclick="document.getElementById('imageInput').click()">📷</button>
   </div>
 
   <!-- 🌗 Theme Toggle -->
@@ -325,14 +323,6 @@
           document.getElementById("replyText").textContent = msg.text;
         };
         
-    // Replace previous image by clearing chatroom first
-    remove(chatRef).then(() => {
-      push(chatRef, {
-        user: username,
-        text: `<img src="${base64Image}" class="chatImage"/>`,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      });
-    });
   };
   reader.readAsDataURL(file);
 });
