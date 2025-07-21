@@ -32,14 +32,15 @@
     <small><b id="replyUser"></b>: <span id="replyText"></span></small>
     <button onclick="cancelReply()" style="float:right;font-size:12px;">❌</button>
   </div>
-
-  <!-- 📝 Input Area -->
-  <div id="inputArea">
-    <input type="text" id="messageInput" placeholder="Message..." onkeydown="if(event.key==='Enter') sendMessage()" />
-    <button onclick="sendMessage()">➤</button>
+<!-- 📝 Input Area -->
+<div id="inputArea">
+  <input type="text" id="messageInput" placeholder="Message..." 
+         onkeydown="if(event.key==='Enter') sendMessage()" />
+  <button onclick="sendMessage()">➤</button>
+  <!-- Image Upload Button -->
   <button onclick="document.getElementById('imageUpload').click()">🖼️</button>
   <input type="file" id="imageUpload" accept="image/*" style="display:none;" onchange="sendImage(this)" />
-  </div>
+</div>
 
   <!-- 🌗 Theme Toggle -->
   <div id="darkModeToggle" onclick="toggleTheme()">🌗 Theme</div>
