@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Responsive Shayari Box</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0a0f25; /* dark blue-black background */
+      font-family: 'Georgia', serif;
+      color: #e0e6ff;
+      padding: 20px;
+    }
+
+    .shayari-box {
+      background: linear-gradient(135deg, #000000, #1a2a6c, #00008b);
+      box-shadow: 0 8px 20px rgba(10, 30, 80, 0.8);
+      padding: 30px 40px;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 15px;
+      text-align: center;
+      font-size: 1.4rem;
+      line-height: 1.6;
+      user-select: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      white-space: pre-wrap;
+    }
+
+    .shayari-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(10, 30, 80, 1);
+    }
+
+    /* Responsive font and padding */
+    @media (max-width: 480px) {
+      .shayari-box {
+        font-size: 1.1rem;
+        padding: 25px 20px;
+        border-radius: 12px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .shayari-box {
+        font-size: 1.6rem;
+        padding: 40px 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shayari-box">
+    HA MAI NASHE M HU MAINE KOYE HOSH NAHI H.........<br />
+    EK BAAT CHORKE KOI AFSOS NAHI H.......<br />
+    GUSSE M GALAT KUCH JYADA BOLGA THA PAR<br />
+    JITNI SAJA TU DEGI ITNA BHI DOSH NHI H
+  </div>
+</body>
+</html>
