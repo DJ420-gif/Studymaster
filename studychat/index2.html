@@ -397,30 +397,6 @@
         .then(() => alert("✅ All messages deleted!"))
         .catch(err => alert("❌ Error: " + err.message));
     }
-    // Show popup icon and attach click event only for authorized user
-window.addEventListener("load", () => {
-  if (allowedUsers.includes(username)) {
-    const popupIcon = document.getElementById("popupIcon");
-    const popupMessage = document.getElementById("popupMessage");
-
-    popupIcon.style.display = "flex"; // show icon
-
-    popupIcon.onclick = () => {
-      if (popupMessage.style.display === "none" || popupMessage.style.display === "") {
-        popupMessage.style.display = "block";
-      } else {
-        popupMessage.style.display = "none";
-      }
-    };
-  } else {
-    // Hide icon if not authorized just in case
-    const popupIcon = document.getElementById("popupIcon");
-    if (popupIcon) popupIcon.style.display = "none";
-  }
-});
-
-window.closePopup = function() {
-  document.getElementById("popupMessage").style.display = "none";
   };
 </script>
   <!-- Floating Popup Icon -->
