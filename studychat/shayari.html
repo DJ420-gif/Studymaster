@@ -280,9 +280,11 @@
   transform: scale(1.1);
 }
   </style>
-<script type="module">
+  });
+
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, push, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getDatabase, ref, push, onChildAdded, remove, set, onValue, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBWbXmXb0DsEZpuyWYv9yJUmCZTxMKKicJS",
@@ -297,39 +299,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const chatRef = ref(db, "chatroom");
-// Last Seen Logic
-const presenceRef = ref(db, `presence/${username}`);
-const lastSeenRef = ref(db, `lastSeen/${username}`);
 
-set(presenceRef, true);
-onDisconnect(presenceRef).remove();
-onDisconnect(lastSeenRef).set(serverTimestamp());
-
-const otherUser = allowedUsers.find(u => u !== username);
-const otherPresenceRef = ref(db, `presence/${otherUser}`);
-const otherLastSeenRef = ref(db, `lastSeen/${otherUser}`);
-
-onValue(otherPresenceRef, (snap) => {
-  const statusEl = document.getElementById("lastSeenStatus");
-  if (snap.exists()) {
-    statusEl.textContent = `🟢 ${otherUser} is Online`;
-    statusEl.style.color = "#22c55e";
-  } else {
-    onValue(otherLastSeenRef, (lsnap) => {
-      if (lsnap.exists()) {
-        const ts = lsnap.val();
-        const date = new Date(ts);
-        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const dateStr = date.toLocaleDateString([], { day: '2-digit', month: 'short' });
-        statusEl.textContent = `⚪ Last seen ${dateStr} at ${timeStr}`;
-        statusEl.style.color = "#aaa";
-      } else {
-        statusEl.textContent = `⚪ ${otherUser} Offline`;
-        statusEl.style.color = "#aaa";
-      }
-    }, { onlyOnce: true });
-  }
-});
   const allowedUsers = ["djkumar", "My life"];
   const params = new URLSearchParams(window.location.search);
   let username = params.get("user") || prompt("Enter your username:");
@@ -340,6 +310,46 @@ onValue(otherPresenceRef, (snap) => {
     throw new Error("Unauthorized user");
   }
 
+  // ── Last Seen Logic ──
+  try {
+    const presenceRef = ref(db, `presence/${username}`);
+    const lastSeenRef = ref(db, `lastSeen/${username}`);
+
+    set(presenceRef, true);
+    onDisconnect(presenceRef).remove();
+    onDisconnect(lastSeenRef).set(serverTimestamp());
+
+    const otherUser = allowedUsers.find(u => u !== username);
+    const otherPresenceRef = ref(db, `presence/${otherUser}`);
+    const otherLastSeenRef = ref(db, `lastSeen/${otherUser}`);
+
+    onValue(otherPresenceRef, (snap) => {
+      const statusEl = document.getElementById("lastSeenStatus");
+      if (!statusEl) return;
+      if (snap.exists()) {
+        statusEl.textContent = `🟢 ${otherUser} is Online`;
+        statusEl.style.color = "#22c55e";
+      } else {
+        onValue(otherLastSeenRef, (lsnap) => {
+          if (lsnap.exists()) {
+            const ts = lsnap.val();
+            const date = new Date(ts);
+            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = date.toLocaleDateString([], { day: '2-digit', month: 'short' });
+            statusEl.textContent = `⚪ Last seen ${dateStr} at ${timeStr}`;
+            statusEl.style.color = "#aaa";
+          } else {
+            statusEl.textContent = `⚪ ${otherUser} Offline`;
+            statusEl.style.color = "#aaa";
+          }
+        }, { onlyOnce: true });
+      }
+    });
+  } catch(e) {
+    console.error("Presence error:", e);
+  }
+
+  // ── Messages ──
   onChildAdded(chatRef, (data) => {
     const msg = data.val();
     const key = data.key;
@@ -354,14 +364,12 @@ onValue(otherPresenceRef, (snap) => {
         <div class="time">${msg.time || ''}</div>
       `;
 
-      // Double-click to reply
       msgElem.ondblclick = () => {
         document.getElementById("replyBox").style.display = "block";
         document.getElementById("replyUser").textContent = msg.user;
         document.getElementById("replyText").textContent = msg.text;
       };
 
-      // Click to delete your own message
       if (msg.user === username) {
         msgElem.style.cursor = "pointer";
         msgElem.title = "Click to delete";
@@ -376,7 +384,7 @@ onValue(otherPresenceRef, (snap) => {
       }
 
       document.getElementById("chatBox").appendChild(msgElem);
-      document.getElementById("chatBox").scrollTop = chatBox.scrollHeight;
+      document.getElementById("chatBox").scrollTop = document.getElementById("chatBox").scrollHeight;
     }
   });
 
@@ -403,30 +411,32 @@ onValue(otherPresenceRef, (snap) => {
     input.value = "";
     cancelReply();
   };
-  window.sendImage = function (input) {
-  const file = input.files[0];
-  if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    push(chatRef, {
-      user: username,
-      text: `<img src="${e.target.result}" class="chatImage" />`,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    });
-    input.value = ""; // Reset so it won't resend the same image
+  window.sendImage = function (input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      push(chatRef, {
+        user: username,
+        text: `<img src="${e.target.result}" class="chatImage" />`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      input.value = "";
+    };
+    reader.readAsDataURL(file);
   };
-  reader.readAsDataURL(file);
-};
+
   window.cancelReply = function () {
     document.getElementById("replyBox").style.display = "none";
     document.getElementById("replyUser").textContent = "";
     document.getElementById("replyText").textContent = "";
   };
 
-  function toggleTheme() {
+  window.toggleTheme = function() {
     document.body.classList.toggle("light");
-  }
+  };
 
   window.clearAllMessages = function () {
     if (confirm("⚠️ Delete all chat messages?")) {
@@ -435,6 +445,6 @@ onValue(otherPresenceRef, (snap) => {
         .catch(err => alert("❌ Error: " + err.message));
     }
   };
-</script>
+  </script>
 </body>
   </html>
