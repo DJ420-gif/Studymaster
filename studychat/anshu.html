@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questions For You 💜</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root{
+      --bg:#0a0a0f;
+      --card:rgba(255,255,255,.06);
+      --border:rgba(255,255,255,.12);
+      --text:#fff;
+      --muted:rgba(255,255,255,.65);
+      --muted2:rgba(255,255,255,.42);
+      --purple:#7c3aed;
+      --pink:#ec4899;
+      --gold:#f59e0b;
+      --cyan:#06b6d4;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--bg);
+      overflow:hidden;
+      color:var(--text);
+    }
+
+    .bg-animation{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      overflow:hidden;
+      pointer-events:none;
+    }
+
+    .orb{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(80px);
+      opacity:.38;
+      animation:floatOrb 8s ease-in-out infinite;
+    }
+
+    .orb:nth-child(1){ width:400px;height:400px;background:var(--purple); top:-100px;left:-100px; }
+    .orb:nth-child(2){ width:350px;height:350px;background:var(--pink); bottom:-100px;right:-100px; animation-delay:-3s; }
+    .orb:nth-child(3){ width:300px;height:300px;background:var(--cyan); top:50%;left:50%; transform:translate(-50%,-50%); animation-delay:-5s; }
+    .orb:nth-child(4){ width:250px;height:250px;background:var(--gold); bottom:10%;left:20%; animation-delay:-2s; }
+
+    @keyframes floatOrb{
+      0%,100%{ transform:translate(0,0) scale(1); }
+      25%{ transform:translate(50px,-50px) scale(1.1); }
+      50%{ transform:translate(-30px,30px) scale(.9); }
+      75%{ transform:translate(40px,20px) scale(1.05); }
+    }
+
+    .particles{
+      position:fixed;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    .particle{
+      position:absolute;
+      width:3px;
+      height:3px;
+      background:rgba(255,255,255,.5);
+      border-radius:50%;
+      animation:particleFloat linear infinite;
+    }
+
+    @keyframes particleFloat{
+      0%{ transform:translateY(100vh) rotate(0deg); opacity:0; }
+      10%{ opacity:1; }
+      90%{ opacity:1; }
+      100%{ transform:translateY(-10vh) rotate(720deg); opacity:0; }
+    }
+
+    .container{
+      position:relative;
+      z-index:10;
+      width:min(90%, 560px);
+    }
+
+    .screen{
+      display:none;
+    }
+
+    .screen.active{
+      display:block;
+      animation:fadeInUp .75s cubic-bezier(.16,1,.3,1);
+    }
+
+    @keyframes fadeInUp{
+      0%{ opacity:0; transform:translateY(30px); }
+      100%{ opacity:1; transform:translateY(0); }
+    }
+
+    .welcome-screen,
+    .question-card,
+    .thank-you-screen{
+      background:var(--card);
+      backdrop-filter:blur(20px);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+
+    .welcome-screen{
+      text-align:center;
+      padding:52px 40px;
+    }
+
+    .welcome-screen h1{
+      font-size:clamp(2rem, 6vw, 2.9rem);
+      font-weight:800;
+      line-height:1.15;
+      margin-bottom:12px;
+      background:linear-gradient(135deg, #c084fc, #ec4899, #f59e0b);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+
+    .welcome-screen p{
+      color:var(--muted);
+      font-size:1rem;
+      margin-bottom:34px;
+      font-weight:300;
+      line-height:1.6;
+    }
+
+    .start-btn,.submit-btn,.btn-yes,.btn-no{
+      font-family:'Poppins',sans-serif;
+      cursor:pointer;
+      border:none;
+      transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease, opacity .25s ease;
+    }
+
+    .start-btn{
+      padding:16px 60px;
+      font-size:1.05rem;
+      font-weight:700;
+      border-radius:50px;
+      color:#fff;
+      background:linear-gradient(135deg, var(--purple), var(--pink));
+      box-shadow:0 0 30px rgba(124,58,237,.35);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .start-btn:hover,
+    .submit-btn:hover,
+    .btn-yes:hover,
+    .btn-no:hover{
+      transform:translateY(-3px) scale(1.03);
+    }
+
+    .start-btn::after{
+      content:'';
+      position:absolute;
+      inset:-50%;
+      background:linear-gradient(transparent, rgba(255,255,255,.12), transparent);
+      transform:rotate(45deg) translateX(-130%);
+      animation:shimmer 3s infinite;
+    }
+
+    @keyframes shimmer{
+      0%{ transform:rotate(45deg) translateX(-130%); }
+      100%{ transform:rotate(45deg) translateX(130%); }
+    }
+
+    .question-card{
+      padding:46px 36px;
+      text-align:center;
+    }
+
+    .progress-container{
+      width:100%;
+      height:4px;
+      background:rgba(255,255,255,.1);
+      border-radius:10px;
+      overflow:hidden;
+      margin-bottom:34px;
+    }
+
+    .progress-bar{
+      height:100%;
+      width:20%;
+      border-radius:10px;
+      background:linear-gradient(90deg, var(--purple), var(--pink), var(--gold));
+      transition:width .55s cubic-bezier(.16,1,.3,1);
+      position:relative;
+    }
+
+    .progress-bar::after{
+      content:'';
+      position:absolute;
+      right:0;
+      top:-3px;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 0 15px rgba(236,72,153,.8);
+    }
+
+    .question-number{
+      display:inline-block;
+      font-size:.78rem;
+      font-weight:700;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:var(--muted2);
+      margin-bottom:18px;
+    }
+
+    .question-text{
+      font-size:clamp(1.35rem, 4vw, 1.7rem);
+      font-weight:700;
+      line-height:1.45;
+      margin-bottom:36px;
+    }
+
+    .buttons-container{
+      display:flex;
+      gap:16px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    .btn-yes,.btn-no{
+      padding:14px 46px;
+      font-size:1rem;
+      font-weight:700;
+      border-radius:16px;
+      min-width:140px;
+    }
+
+    .btn-yes{
+      color:#fff;
+      background:linear-gradient(135deg, var(--purple), #a855f7);
+      box-shadow:0 4px 25px rgba(124,58,237,.3);
+    }
+
+    .btn-no{
+      color:rgba(255,255,255,.75);
+      background:transparent;
+      border:2px solid rgba(255,255,255,.18);
+    }
+
+    .btn-no:hover{
+      border-color:var(--pink);
+      color:var(--pink);
+      box-shadow:0 8px 40px rgba(236,72,153,.18);
+    }
+
+    .time-input{
+      width:100%;
+      max-width:320px;
+      padding:18px 22px;
+      margin:8px auto 12px;
+      display:block;
+      font-size:1.05rem;
+      font-family:'Poppins',sans-serif;
+      color:#fff;
+      background:rgba(255,255,255,.08);
+      border:2px solid rgba(255,255,255,.14);
+      border-radius:16px;
+      outline:none;
+      text-align:center;
+      transition:all .25s ease;
+    }
+
+    .time-input:focus{
+      border-color:#a855f7;
+      box-shadow:0 0 30px rgba(168,85,247,.2);
+      background:rgba(255,255,255,.1);
+    }
+
+    .time-input::placeholder{
+      color:rgba(255,255,255,.34);
+    }
+
+    .time-hint{
+      color:var(--muted2);
+      font-size:.85rem;
+      margin-top:6px;
+    }
+
+    .warning-text{
+      color:var(--gold);
+      font-size:.86rem;
+      margin-top:14px;
+      font-style:italic;
+    }
+
+    .submit-btn{
+      padding:16px 60px;
+      font-size:1.05rem;
+      font-weight:700;
+      border-radius:50px;
+      color:#fff;
+      margin-top:26px;
+      background:linear-gradient(135deg, var(--purple), var(--pink), var(--gold));
+      background-size:200% 200%;
+      animation:gradientShift 3s ease infinite;
+      box-shadow:0 0 30px rgba(124,58,237,.28);
+    }
+
+    @keyframes gradientShift{
+      0%{ background-position:0% 50%; }
+      50%{ background-position:100% 50%; }
+      100%{ background-position:0% 50%; }
+    }
+
+    .submit-btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform:none !important;
+    }
+
+    .thank-you-screen{
+      display:none;
+      text-align:center;
+      padding:48px 28px;
+    }
+
+    .thank-you-screen.active{
+      display:block;
+      animation:fadeInUp .75s ease-out;
+    }
+
+    .thank-you-icon{
+      font-size:5rem;
+      margin-bottom:18px;
+      display:inline-block;
+      animation:heartbeat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat{
+      0%,100%{ transform:scale(1); }
+      25%{ transform:scale(1.12); }
+      50%{ transform:scale(1); }
+      75%{ transform:scale(1.08); }
+    }
+
+    .thank-you-screen h1{
+      font-size:clamp(2rem, 5vw, 2.5rem);
+      font-weight:800;
+      margin-bottom:12px;
+      background:linear-gradient(135deg, #c084fc, #ec4899, #f59e0b, #06b6d4);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      background-size:300% 300%;
+      animation:gradientShift 4s ease infinite;
+    }
+
+    .thank-you-screen p{
+      color:var(--muted);
+      font-size:1rem;
+      line-height:1.65;
+    }
+
+    .submitted-time{
+      display:inline-block;
+      margin-top:22px;
+      padding:12px 26px;
+      border-radius:12px;
+      background:rgba(124,58,237,.18);
+      border:1px solid rgba(124,58,237,.35);
+      color:#c084fc;
+      font-weight:700;
+    }
+
+    .confetti-container{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:20;
+      overflow:hidden;
+    }
+
+    .confetti{
+      position:absolute;
+      width:10px;
+      height:16px;
+      opacity:.9;
+      border-radius:3px;
+      animation:confettiFall 2.8s linear forwards;
+    }
+
+    @keyframes confettiFall{
+      0%{ transform:translateY(-20px) rotate(0deg); opacity:1; }
+      100%{ transform:translateY(110vh) rotate(720deg); opacity:0; }
+    }
+
+    @media (max-width: 640px){
+      .welcome-screen,
+      .question-card,
+      .thank-you-screen{
+        padding:34px 22px;
+        border-radius:20px;
+      }
+      .buttons-container{ gap:12px; }
+      .btn-yes,.btn-no,.submit-btn{ width:100%; }
+      .start-btn{ width:100%; padding:16px 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+
+  <div class="particles" id="particles"></div>
+  <div class="confetti-container" id="confettiContainer"></div>
+
+  <div class="container">
+    <section class="welcome-screen screen active" id="welcomeScreen">
+      <h1>Questions For You 💜</h1>
+      <p>A smooth, modern, vibrant experience with a simple flow.</p>
+      <button class="start-btn" onclick="startQuestions()">Start</button>
+    </section>
+
+    <section class="question-card screen" id="questionCard">
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="question-number" id="questionNumber">Question 1 of 5</div>
+      <div class="question-text" id="questionText"></div>
+
+      <div id="answerArea">
+        <div class="buttons-container" id="yesNoButtons">
+          <button class="btn-yes" onclick="answerQuestion('Yes')">Yes</button>
+          <button class="btn-no" onclick="answerQuestion('No')">No</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="thank-you-screen screen" id="thankYouScreen">
+      <div class="thank-you-icon">✨</div>
+      <h1>Thanks for attention</h1>
+      <p>Your response has been submitted successfully.</p>
+      <div class="submitted-time" id="submittedTime"></div>
+    </section>
+  </div>
+
+  <script>
+    emailjs.init("YOUR_PUBLIC_KEY");
+
+    const questions = [
+      "Do you have a new boyfriend?",
+      "Do you still love someone?",
+      "Do you want to talk?",
+      "Will you be on time for talks?",
+      "Now submit the time you can talk and don't betray this time."
+    ];
+
+    let currentQuestion = 0;
+    const answers = [];
+
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const questionCard = document.getElementById("questionCard");
+    const thankYouScreen = document.getElementById("thankYouScreen");
+    const questionText = document.getElementById("questionText");
+    const questionNumber = document.getElementById("questionNumber");
+    const progressBar = document.getElementById("progressBar");
+    const answerArea = document.getElementById("answerArea");
+    const submittedTime = document.getElementById("submittedTime");
+    const confettiContainer = document.getElementById("confettiContainer");
+    const particles = document.getElementById("particles");
+
+    function createParticles() {
+      for (let i = 0; i < 28; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.animationDuration = (8 + Math.random() * 10) + "s";
+        p.style.animationDelay = (-Math.random() * 10) + "s";
+        p.style.opacity = (0.2 + Math.random() * 0.6);
+        p.style.transform = `scale(${0.8 + Math.random() * 1.8})`;
+        particles.appendChild(p);
+      }
+    }
+
+    function startQuestions() {
+      welcomeScreen.classList.remove("active");
+      questionCard.classList.add("active");
+      currentQuestion = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      questionText.textContent = questions[currentQuestion];
+      questionNumber.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+      progressBar.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+
+      if (currentQuestion < questions.length - 1) {
+        answerArea.innerHTML = `
+          <div class="buttons-container">
+            <button class="btn-yes" onclick="answerQuestion('Yes')">Yes</button>
+            <button class="btn-no" onclick="answerQuestion('No')">No</button>
+          </div>
+        `;
+      } else {
+        answerArea.innerHTML = `
+          <input
+            type="text"
+            class="time-input"
+            id="timeInput"
+            placeholder="Type the time here, e.g. 6:30 PM"
+            autocomplete="off"
+          />
+          <div class="time-hint">Enter the time you can talk.</div>
+          <div class="warning-text">Please be honest with this time.</div>
+          <button class="submit-btn" onclick="submitTime()">Submit</button>
+        `;
+      }
+    }
+
+    function answerQuestion(answer) {
+      answers.push({
+        question: questions[currentQuestion],
+        answer: answer
+      });
+
+      currentQuestion++;
+      questionCard.classList.remove("active");
+      void questionCard.offsetWidth;
+      questionCard.classList.add("active");
+
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      }
+    }
+
+    async function submitTime() {
+      const timeInput = document.getElementById("timeInput");
+      const timeValue = timeInput.value.trim();
+
+      if (!timeValue) {
+        timeInput.style.borderColor = "#f59e0b";
+        timeInput.focus();
+        return;
+      }
+
+      const submitBtn = document.querySelector(".submit-btn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+
+      try {
+        await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+          time: timeValue,
+          answers: JSON.stringify(answers, null, 2),
+          message: `Submitted time: ${timeValue}`
+        });
+
+        showThankYou(timeValue);
+      } catch (error) {
+        console.error("Email error:", error);
+        alert("Email could not be sent. Check your EmailJS settings.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+      }
+    }
+
+    function showThankYou(timeValue) {
+      questionCard.classList.remove("active");
+      thankYouScreen.classList.add("active");
+      submittedTime.textContent = `Time submitted: ${timeValue}`;
+      progressBar.style.width = "100%";
+      createConfetti();
+    }
+
+    function createConfetti() {
+      const colors = ["#7c3aed", "#ec4899", "#f59e0b", "#06b6d4", "#ffffff"];
+
+      for (let i = 0; i < 80; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDuration = (2 + Math.random() * 2) + "s";
+        c.style.animationDelay = Math.random() * 0.4 + "s";
+        c.style.transform = `rotate(${Math.random() * 180}deg)`;
+        confettiContainer.appendChild(c);
+
+        setTimeout(() => c.remove(), 4000);
+      }
+    }
+
+    createParticles();
+  </script>
+</body>
+</html>
