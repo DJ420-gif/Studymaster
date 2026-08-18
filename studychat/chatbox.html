@@ -472,7 +472,6 @@ const firebaseConfig = {
 
   let firebaseReady = initFirebase(FIREBASE_CONFIG) && !isPlaceholderConfig(FIREBASE_CONFIG);
 
-  // ---------------- LOGIN (browser prompts for the username) ----------------
   // ---------------- USERNAME LOGIN ----------------
 
 const ALLOWED_USERS = ['Me', 'Rani'];
@@ -539,32 +538,62 @@ function startAuth() {
     return;
   }
 
+  // Firebase is ready.
+  // The username box is already visible.
+}
 
 
-  el('gateRetry').addEventListener('click', askUsername);
-  el('openConnect').addEventListener('click', () => el('connectCard').classList.add('show'));
-  el('cancelConnect').addEventListener('click', () => el('connectCard').classList.remove('show'));
+// Firebase connection buttons
+el('openConnect').addEventListener(
+  'click',
+  () => el('connectCard').classList.add('show')
+);
 
-  el('submitConnect').addEventListener('click', () => {
-    const raw = el('configInput').value.trim();
-    try{
-      const cfg = JSON.parse(raw);
-      if (isPlaceholderConfig(cfg)) throw new Error('incomplete');
-      const ok = initFirebase(cfg);
-      if (!ok) throw new Error('init failed');
-      firebaseReady = true;
-      el('connectError').style.display = 'none';
-      el('connectCard').classList.remove('show');
-      toast('Firebase connected for this session');
-      askUsername();
-    } catch(e){
-      el('connectError').style.display = 'block';
+el('cancelConnect').addEventListener(
+  'click',
+  () => el('connectCard').classList.remove('show')
+);
+
+el('submitConnect').addEventListener('click', () => {
+
+  const raw = el('configInput').value.trim();
+
+  try {
+
+    const cfg = JSON.parse(raw);
+
+    if (isPlaceholderConfig(cfg)) {
+      throw new Error('incomplete');
     }
-  });
 
-  // kick things off
-  startAuth();
+    const ok = initFirebase(cfg);
 
+    if (!ok) {
+      throw new Error('init failed');
+    }
+
+    firebaseReady = true;
+
+    el('connectError').style.display = 'none';
+
+    el('connectCard').classList.remove('show');
+
+    toast('Firebase connected for this session');
+
+  } catch (e) {
+
+    console.error(e);
+
+    el('connectError').style.display = 'block';
+
+  }
+
+});
+
+
+// Start Firebase
+startAuth();
+    
   // ---------------- CHAT ----------------
   function enterChat(){
     el('peerName').textContent = peerUser;
