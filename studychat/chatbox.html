@@ -511,23 +511,26 @@ function askUsername() {
 }
 
 
-// Sign-in button
-document.getElementById('usernameBtn').addEventListener(
-  'click',
-  askUsername
-);
+document.addEventListener('DOMContentLoaded', function () {
 
+  const usernameBtn =
+    document.getElementById('usernameBtn');
 
-// Press Enter to sign in
-document.getElementById('usernameInput').addEventListener(
-  'keydown',
-  function(e) {
+  const usernameInput =
+    document.getElementById('usernameInput');
+
+  usernameBtn.addEventListener('click', askUsername);
+
+  usernameInput.addEventListener('keydown', function(e) {
+
     if (e.key === 'Enter') {
       e.preventDefault();
       askUsername();
     }
-  }
-);
+
+  });
+
+});
 
 
 // ---------------- FIREBASE AUTH START ----------------
