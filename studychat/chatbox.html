@@ -430,335 +430,598 @@ const firebaseConfig = {
 </div>
 
 <script>
-  // ---------------- STATE ----------------
-  let db = null;
-  let unsubscribe = null;
-  let currentUser = null;   // "Me" or "Rani"
-  let peerUser = null;
-  const COLLECTION = "chatbox_messages";
 
-  const el = (id) => document.getElementById(id);
-  const showScreen = (id) => {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    el(id).classList.add('active');
-  };
+// ---------------- STATE ----------------
 
-  function toast(msg){
-    const t = el('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    clearTimeout(toast._h);
-    toast._h = setTimeout(() => t.classList.remove('show'), 2200);
-  }
+let db = null;
+let unsubscribe = null;
+let currentUser = null;
+let peerUser = null;
 
-  // ---------------- FIREBASE INIT ----------------
-  function isPlaceholderConfig(cfg){
-    return !cfg || cfg.apiKey === "YOUR_API_KEY" || !cfg.apiKey || !cfg.projectId;
-  }
+const COLLECTION = "chatbox_messages";
 
-  function initFirebase(cfg){
-    try{
-      if (firebase.apps && firebase.apps.length) {
-        firebase.apps.forEach(a => a.delete());
-      }
-      firebase.initializeApp(cfg);
-      db = firebase.firestore();
-      return true;
-    } catch(e){
-      console.error(e);
-      return false;
+const el = (id) => document.getElementById(id);
+
+function showScreen(id) {
+  document.querySelectorAll('.screen')
+    .forEach(s => s.classList.remove('active'));
+
+  el(id).classList.add('active');
+}
+
+function toast(msg) {
+  const t = el('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+
+  clearTimeout(toast._h);
+
+  toast._h = setTimeout(() => {
+    t.classList.remove('show');
+  }, 2200);
+}
+
+
+// ---------------- FIREBASE ----------------
+
+function isPlaceholderConfig(cfg) {
+  return !cfg ||
+    cfg.apiKey === "YOUR_API_KEY" ||
+    !cfg.apiKey ||
+    !cfg.projectId;
+}
+
+function initFirebase(cfg) {
+
+  try {
+
+    if (firebase.apps && firebase.apps.length) {
+      firebase.apps.forEach(a => a.delete());
     }
-  }
 
-  let firebaseReady = initFirebase(FIREBASE_CONFIG) && !isPlaceholderConfig(FIREBASE_CONFIG);
+    firebase.initializeApp(cfg);
 
-  // ---------------- USERNAME LOGIN ----------------
+    db = firebase.firestore();
 
-const ALLOWED_USERS = ['Me', 'Rani'];
+    return true;
 
-function showDenied(msg) {
-  const error = document.getElementById('usernameError');
+  } catch (e) {
 
-  if (error) {
-    error.textContent = msg;
-    error.style.display = 'block';
+    console.error(e);
+
+    return false;
   }
 }
 
+let firebaseReady =
+  initFirebase(FIREBASE_CONFIG) &&
+  !isPlaceholderConfig(FIREBASE_CONFIG);
+
+
+// ---------------- USERNAME LOGIN ----------------
+
+const ALLOWED_USERS = ['Me', 'Rani'];
+
 function askUsername() {
+
   const input = document.getElementById('usernameInput');
   const error = document.getElementById('usernameError');
 
   if (!input || !error) {
-    console.error('Username input elements not found.');
+    console.error("Username elements not found.");
     return;
   }
 
   const name = input.value.trim();
 
   if (!ALLOWED_USERS.includes(name)) {
-    error.textContent = 'Please enter Me or Rani.';
-    error.style.display = 'block';
+
+    error.textContent = "Please enter Me or Rani.";
+    error.style.display = "block";
+
     return;
   }
 
-  error.style.display = 'none';
+  error.style.display = "none";
 
   currentUser = name;
-  peerUser = name === 'Me' ? 'Rani' : 'Me';
+
+  peerUser = name === "Me"
+    ? "Rani"
+    : "Me";
 
   enterChat();
 }
 
 
-document.addEventListener('DOMContentLoaded', function () {
+// ---------------- START AUTH ----------------
 
-  const usernameBtn =
-    document.getElementById('usernameBtn');
+function startAuth() {
 
-  const usernameInput =
-    document.getElementById('usernameInput');
+  if (!firebaseReady) {
 
-  usernameBtn.addEventListener('click', askUsername);
+    el('connectCard').classList.add('show');
 
-  usernameInput.addEventListener('keydown', function(e) {
+    return;
+  }
+
+  // Firebase is ready.
+  // Username box is already visible.
+}
+
+
+// ---------------- LOGIN BUTTON ----------------
+
+document.getElementById('usernameBtn')
+  .addEventListener('click', askUsername);
+
+document.getElementById('usernameInput')
+  .addEventListener('keydown', function(e) {
 
     if (e.key === 'Enter') {
+
       e.preventDefault();
+
       askUsername();
     }
 
   });
 
-});
 
+// ---------------- FIREBASE CONNECT CARD ----------------
 
-// ---------------- FIREBASE AUTH START ----------------
-
-function startAuth() {
-  if (!firebaseReady) {
+el('openConnect')
+  .addEventListener('click', () => {
     el('connectCard').classList.add('show');
-    return;
-  }
+  });
 
-  // Firebase is ready.
-  // The username box is already visible.
+el('cancelConnect')
+  .addEventListener('click', () => {
+    el('connectCard').classList.remove('show');
+  });
+
+el('submitConnect')
+  .addEventListener('click', () => {
+
+    const raw = el('configInput').value.trim();
+
+    try {
+
+      const cfg = JSON.parse(raw);
+
+      if (isPlaceholderConfig(cfg)) {
+        throw new Error('incomplete');
+      }
+
+      const ok = initFirebase(cfg);
+
+      if (!ok) {
+        throw new Error('init failed');
+      }
+
+      firebaseReady = true;
+
+      el('connectError').style.display = 'none';
+
+      el('connectCard').classList.remove('show');
+
+      toast('Firebase connected');
+
+    } catch (e) {
+
+      console.error(e);
+
+      el('connectError').style.display = 'block';
+    }
+
+  });
+
+
+// Start
+startAuth();
+
+
+// ---------------- CHAT ----------------
+
+function enterChat() {
+
+  el('peerName').textContent = peerUser;
+
+  el('peerAvatar').textContent = peerUser[0];
+
+  showScreen('chat');
+
+  listenMessages();
+
+  el('msgInput').focus();
 }
 
 
-// Firebase connection buttons
-el('openConnect').addEventListener(
-  'click',
-  () => el('connectCard').classList.add('show')
-);
+// ---------------- SWITCH USER ----------------
 
-el('cancelConnect').addEventListener(
-  'click',
-  () => el('connectCard').classList.remove('show')
-);
+el('switchBtn')
+  .addEventListener('click', () => {
 
-el('submitConnect').addEventListener('click', () => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
 
-  const raw = el('configInput').value.trim();
+    currentUser = null;
+    peerUser = null;
+
+    el('messages').innerHTML = '';
+
+    showScreen('gate');
+
+    el('usernameInput').value = '';
+    el('usernameInput').focus();
+
+  });
+
+
+// ---------------- TIME ----------------
+
+function formatTime(date) {
+
+  return date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+}
+
+function formatDay(date) {
+
+  const today = new Date();
+
+  const yest = new Date();
+
+  yest.setDate(today.getDate() - 1);
+
+  const sameDay = (a, b) =>
+    a.toDateString() === b.toDateString();
+
+  if (sameDay(date, today))
+    return 'Today';
+
+  if (sameDay(date, yest))
+    return 'Yesterday';
+
+  return date.toLocaleDateString([], {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+}
+
+
+// ---------------- RENDER MESSAGES ----------------
+
+function renderMessages(docs) {
+
+  const container = el('messages');
+
+  container.innerHTML = '';
+
+  if (!docs.length) {
+
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="glyph">✦</div>
+        <p>No messages yet — say hello.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  let lastDay = null;
+
+  docs.forEach(doc => {
+
+    const data = doc.data();
+
+    const ts =
+      data.createdAt &&
+      data.createdAt.toDate
+        ? data.createdAt.toDate()
+        : new Date();
+
+    const dayLabel = formatDay(ts);
+
+    if (dayLabel !== lastDay) {
+
+      const divider =
+        document.createElement('div');
+
+      divider.className = 'day-divider';
+
+      divider.innerHTML = `
+        <span class="diamond"></span>
+        <span>${dayLabel}</span>
+        <span class="diamond"></span>
+      `;
+
+      container.appendChild(divider);
+
+      lastDay = dayLabel;
+    }
+
+    const isMe =
+      data.sender === currentUser;
+
+    const row =
+      document.createElement('div');
+
+    row.className =
+      `row ${isMe ? 'me' : 'rani'}`;
+
+    const wrap =
+      document.createElement('div');
+
+    wrap.className = 'bubble-wrap';
+
+    const bubble =
+      document.createElement('div');
+
+    bubble.className = 'bubble';
+
+    bubble.innerHTML =
+      `${escapeHTML(data.text)}
+       <span class="time">
+         ${formatTime(ts)}
+       </span>`;
+
+    const delBtn =
+      document.createElement('button');
+
+    delBtn.className = 'del-btn';
+
+    delBtn.title = 'Delete message';
+
+    delBtn.innerHTML = `
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m2 0-.8 12.1a2 2 0 0 1-2 1.9H7.8a2 2 0 0 1-2-1.9L5 7"/>
+      </svg>
+    `;
+
+    delBtn.addEventListener(
+      'click',
+      () => deleteMessage(doc.id)
+    );
+
+    wrap.appendChild(bubble);
+
+    wrap.appendChild(delBtn);
+
+    row.appendChild(wrap);
+
+    container.appendChild(row);
+
+  });
+
+  container.scrollTop =
+    container.scrollHeight;
+}
+
+
+function escapeHTML(str) {
+
+  const d =
+    document.createElement('div');
+
+  d.textContent = str;
+
+  return d.innerHTML;
+}
+
+
+// ---------------- FIRESTORE LISTENER ----------------
+
+function listenMessages() {
+
+  if (unsubscribe) {
+    unsubscribe();
+  }
+
+  unsubscribe =
+    db.collection(COLLECTION)
+      .orderBy('createdAt', 'asc')
+      .onSnapshot(
+
+        snap => {
+          renderMessages(snap.docs);
+        },
+
+        err => {
+
+          console.error(err);
+
+          toast(
+            'Connection error — check Firestore rules'
+          );
+
+        }
+
+      );
+}
+
+
+// ---------------- SEND MESSAGE ----------------
+
+async function sendMessage() {
+
+  const input = el('msgInput');
+
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  input.value = '';
+
+  autoGrow(input);
+
+  updateSendState();
 
   try {
 
-    const cfg = JSON.parse(raw);
+    await db
+      .collection(COLLECTION)
+      .add({
 
-    if (isPlaceholderConfig(cfg)) {
-      throw new Error('incomplete');
-    }
+        text: text,
 
-    const ok = initFirebase(cfg);
+        sender: currentUser,
 
-    if (!ok) {
-      throw new Error('init failed');
-    }
+        createdAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp()
 
-    firebaseReady = true;
-
-    el('connectError').style.display = 'none';
-
-    el('connectCard').classList.remove('show');
-
-    toast('Firebase connected for this session');
+      });
 
   } catch (e) {
 
     console.error(e);
 
-    el('connectError').style.display = 'block';
+    toast('Message failed to send');
+
+  }
+}
+
+
+// ---------------- DELETE MESSAGE ----------------
+
+async function deleteMessage(id) {
+
+  try {
+
+    await db
+      .collection(COLLECTION)
+      .doc(id)
+      .delete();
+
+  } catch (e) {
+
+    console.error(e);
+
+    toast('Could not delete message');
+
+  }
+}
+
+
+// ---------------- CLEAR ALL ----------------
+
+async function clearAllMessages() {
+
+  try {
+
+    const snap =
+      await db
+        .collection(COLLECTION)
+        .get();
+
+    const batch = db.batch();
+
+    snap.docs.forEach(d =>
+      batch.delete(d.ref)
+    );
+
+    await batch.commit();
+
+    toast('All messages cleared');
+
+  } catch (e) {
+
+    console.error(e);
+
+    toast('Could not clear chats');
+
+  }
+}
+
+
+// ---------------- COMPOSER ----------------
+
+const input = el('msgInput');
+
+function autoGrow(t) {
+
+  t.style.height = 'auto';
+
+  t.style.height =
+    Math.min(t.scrollHeight, 120) + 'px';
+
+}
+
+function updateSendState() {
+
+  el('sendBtn').disabled =
+    input.value.trim().length === 0;
+
+}
+
+input.addEventListener('input', () => {
+
+  autoGrow(input);
+
+  updateSendState();
+
+});
+
+input.addEventListener('keydown', e => {
+
+  if (
+    e.key === 'Enter' &&
+    !e.shiftKey
+  ) {
+
+    e.preventDefault();
+
+    sendMessage();
 
   }
 
 });
 
+el('sendBtn')
+  .addEventListener('click', sendMessage);
 
-// Start Firebase
-startAuth();
-    
-  // ---------------- CHAT ----------------
-  function enterChat(){
-    el('peerName').textContent = peerUser;
-    el('peerAvatar').textContent = peerUser[0];
-    showScreen('chat');
-    listenMessages();
-    el('msgInput').focus();
-  }
 
-  el('switchBtn').addEventListener('click', () => {
-    if (unsubscribe) unsubscribe();
-    currentUser = null; peerUser = null;
-    el('messages').innerHTML = '';
-    showScreen('gate');
-    askUsername();
+// ---------------- CLEAR MODAL ----------------
+
+el('clearBtn')
+  .addEventListener('click', () => {
+
+    el('clearModal')
+      .classList.add('show');
+
   });
 
-  function formatTime(date){
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
-  function formatDay(date){
-    const today = new Date();
-    const yest = new Date(); yest.setDate(today.getDate() - 1);
-    const sameDay = (a,b) => a.toDateString() === b.toDateString();
-    if (sameDay(date, today)) return 'Today';
-    if (sameDay(date, yest)) return 'Yesterday';
-    return date.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
-  }
+el('cancelClear')
+  .addEventListener('click', () => {
 
-  function renderMessages(docs){
-    const container = el('messages');
-    container.innerHTML = '';
+    el('clearModal')
+      .classList.remove('show');
 
-    if (!docs.length){
-      container.innerHTML = `
-        <div class="empty-state">
-          <div class="glyph">✦</div>
-          <p>No messages yet — say hello.</p>
-        </div>`;
-      return;
-    }
-
-    let lastDay = null;
-    docs.forEach(doc => {
-      const data = doc.data();
-      const ts = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate() : new Date();
-      const dayLabel = formatDay(ts);
-
-      if (dayLabel !== lastDay){
-        const divider = document.createElement('div');
-        divider.className = 'day-divider';
-        divider.innerHTML = `<span class="diamond"></span><span>${dayLabel}</span><span class="diamond"></span>`;
-        container.appendChild(divider);
-        lastDay = dayLabel;
-      }
-
-      const isMe = data.sender === currentUser;
-      const row = document.createElement('div');
-      row.className = `row ${isMe ? 'me' : 'rani'}`;
-
-      const wrap = document.createElement('div');
-      wrap.className = 'bubble-wrap';
-
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble';
-      bubble.innerHTML = `${escapeHTML(data.text)}<span class="time">${formatTime(ts)}</span>`;
-
-      const delBtn = document.createElement('button');
-      delBtn.className = 'del-btn';
-      delBtn.title = 'Delete message';
-      delBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m2 0-.8 12.1a2 2 0 0 1-2 1.9H7.8a2 2 0 0 1-2-1.9L5 7"/></svg>`;
-      delBtn.addEventListener('click', () => deleteMessage(doc.id));
-
-      wrap.appendChild(bubble);
-      wrap.appendChild(delBtn);
-      row.appendChild(wrap);
-      container.appendChild(row);
-    });
-
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function escapeHTML(str){
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
-
-  function listenMessages(){
-    if (unsubscribe) unsubscribe();
-    unsubscribe = db.collection(COLLECTION)
-      .orderBy('createdAt', 'asc')
-      .onSnapshot(snap => {
-        renderMessages(snap.docs);
-      }, err => {
-        console.error(err);
-        toast('Connection error — check Firestore rules');
-      });
-  }
-
-  async function sendMessage(){
-    const input = el('msgInput');
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-    autoGrow(input);
-    updateSendState();
-    try{
-      await db.collection(COLLECTION).add({
-        text,
-        sender: currentUser,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    } catch(e){
-      console.error(e);
-      toast('Message failed to send');
-    }
-  }
-
-  async function deleteMessage(id){
-    try{
-      await db.collection(COLLECTION).doc(id).delete();
-    } catch(e){
-      console.error(e);
-      toast('Could not delete message');
-    }
-  }
-
-  async function clearAllMessages(){
-    try{
-      const snap = await db.collection(COLLECTION).get();
-      const batch = db.batch();
-      snap.docs.forEach(d => batch.delete(d.ref));
-      await batch.commit();
-      toast('All messages cleared');
-    } catch(e){
-      console.error(e);
-      toast('Could not clear chats');
-    }
-  }
-
-  // ---------------- COMPOSER ----------------
-  const input = el('msgInput');
-  function autoGrow(t){ t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 120) + 'px'; }
-  function updateSendState(){ el('sendBtn').disabled = input.value.trim().length === 0; }
-
-  input.addEventListener('input', () => { autoGrow(input); updateSendState(); });
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey){
-      e.preventDefault();
-      sendMessage();
-    }
   });
-  el('sendBtn').addEventListener('click', sendMessage);
 
-  // ---------------- CLEAR MODAL ----------------
-  el('clearBtn').addEventListener('click', () => el('clearModal').classList.add('show'));
-  el('cancelClear').addEventListener('click', () => el('clearModal').classList.remove('show'));
-  el('confirmClear').addEventListener('click', () => {
-    el('clearModal').classList.remove('show');
+el('confirmClear')
+  .addEventListener('click', () => {
+
+    el('clearModal')
+      .classList.remove('show');
+
     clearAllMessages();
+
   });
-</script>
+
+     </script>
 </body>
 </html>
