@@ -306,6 +306,35 @@ const firebaseConfig = {
     #messages{ padding:20px 14px; }
     .bubble-wrap{ max-width:86%; }
   }
+     .username-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(320px, 85vw);
+}
+
+.username-login input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  outline: none;
+}
+
+.username-login input:focus {
+  border-color: var(--gold);
+}
+
+#usernameError {
+  display: none;
+  color: var(--danger);
+  font-size: 12px;
+  text-align: center;
+     }
 </style>
 </head>
 <body>
@@ -321,6 +350,21 @@ const firebaseConfig = {
       <div class="sub" id="gateSub">Waiting for sign-in…</div>
       <button class="btn primary gate-retry" id="gateRetry">Try again</button>
     </div>
+       <div class="username-login">
+  <input
+    type="text"
+    id="usernameInput"
+    placeholder="Enter username: Me or Rani"
+  >
+
+  <button class="btn primary" id="usernameBtn">
+    Sign in
+  </button>
+
+  <div id="usernameError">
+    Please enter Me or Rani.
+  </div>
+       </div>
     <div class="setup-note">
       Runs on your own <b>Firebase</b> project. Edit <b>FIREBASE_CONFIG</b> in the file,
       or <span class="setup-link" id="openConnect">connect one now</span> for this session.
@@ -438,24 +482,32 @@ const firebaseConfig = {
   }
 
   function askUsername(){
-    el('gateIcon').textContent = '💬';
-    el('gateSub').textContent = 'Waiting for sign-in…';
-    el('gateRetry').classList.remove('show');
+  const input = document.getElementById("usernameInput");
+  const error = document.getElementById("usernameError");
 
-    const raw = window.prompt("Enter your username (Me or Rani):");
-    if (raw === null){
-      showDenied('Sign-in cancelled.');
-      return;
-    }
-    const name = raw.trim();
-    if (!ALLOWED_USERS.includes(name)){
-      showDenied('Access denied — unrecognized username.');
-      return;
-    }
-    currentUser = name;
-    peerUser = name === 'Me' ? 'Rani' : 'Me';
-    enterChat();
+  const name = input.value.trim();
+
+  if (!ALLOWED_USERS.includes(name)){
+    error.textContent = "Please enter Me or Rani.";
+    error.style.display = "block";
+    return;
   }
+
+  error.style.display = "none";
+
+  currentUser = name;
+  peerUser = name === "Me" ? "Rani" : "Me";
+
+  enterChat();
+}
+
+document.getElementById("usernameBtn").addEventListener("click", askUsername);
+
+document.getElementById("usernameInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    askUsername();
+  }
+});
 
   function startAuth(){
     if (!firebaseReady){
