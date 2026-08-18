@@ -473,49 +473,73 @@ const firebaseConfig = {
   let firebaseReady = initFirebase(FIREBASE_CONFIG) && !isPlaceholderConfig(FIREBASE_CONFIG);
 
   // ---------------- LOGIN (browser prompts for the username) ----------------
-  const ALLOWED_USERS = ['Me', 'Rani'];
+  // ---------------- USERNAME LOGIN ----------------
 
-  function showDenied(msg){
-    el('gateIcon').textContent = '✕';
-    el('gateSub').textContent = msg;
-    el('gateRetry').classList.add('show');
+const ALLOWED_USERS = ['Me', 'Rani'];
+
+function showDenied(msg) {
+  const error = document.getElementById('usernameError');
+
+  if (error) {
+    error.textContent = msg;
+    error.style.display = 'block';
   }
+}
 
-  function askUsername(){
-  const input = document.getElementById("usernameInput");
-  const error = document.getElementById("usernameError");
+function askUsername() {
+  const input = document.getElementById('usernameInput');
+  const error = document.getElementById('usernameError');
 
-  const name = input.value.trim();
-
-  if (!ALLOWED_USERS.includes(name)){
-    error.textContent = "Please enter Me or Rani.";
-    error.style.display = "block";
+  if (!input || !error) {
+    console.error('Username input elements not found.');
     return;
   }
 
-  error.style.display = "none";
+  const name = input.value.trim();
+
+  if (!ALLOWED_USERS.includes(name)) {
+    error.textContent = 'Please enter Me or Rani.';
+    error.style.display = 'block';
+    return;
+  }
+
+  error.style.display = 'none';
 
   currentUser = name;
-  peerUser = name === "Me" ? "Rani" : "Me";
+  peerUser = name === 'Me' ? 'Rani' : 'Me';
 
   enterChat();
 }
 
-document.getElementById("usernameBtn").addEventListener("click", askUsername);
 
-document.getElementById("usernameInput").addEventListener("keydown", function(e){
-  if(e.key === "Enter"){
-    askUsername();
-  }
-});
+// Sign-in button
+document.getElementById('usernameBtn').addEventListener(
+  'click',
+  askUsername
+);
 
-  function startAuth(){
-    if (!firebaseReady){
-      el('connectCard').classList.add('show');
-      return;
+
+// Press Enter to sign in
+document.getElementById('usernameInput').addEventListener(
+  'keydown',
+  function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      askUsername();
     }
-    askUsername();
   }
+);
+
+
+// ---------------- FIREBASE AUTH START ----------------
+
+function startAuth() {
+  if (!firebaseReady) {
+    el('connectCard').classList.add('show');
+    return;
+  }
+
+
 
   el('gateRetry').addEventListener('click', askUsername);
   el('openConnect').addEventListener('click', () => el('connectCard').classList.add('show'));
