@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>💬 ChatBox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     FIREBASE SETUP
+     ------------------------------------------------------------
+     1. Go to https://console.firebase.google.com → create a project
+     2. Build → Firestore Database → Create database (test mode is fine to start)
+     3. Project settings → General → "Your apps" → Web app → copy the config
+     4. Paste it into FIREBASE_CONFIG below (or paste it into the on-screen
+        "Connect Firebase" card the first time you open this page — that
+        works too, but only lasts for the current browser session).
+     ============================================================ -->
+<script>
+  const FIREBASE_CONFIG = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+<style>
+  :root{
+    --bg: #14120e;
+    --surface: #1c1912;
+    --surface-raised: #262117;
+    --hairline: rgba(201,164,105,0.22);
+    --gold: #c9a469;
+    --gold-soft: #e8d9b8;
+    --gold-dim: #8a744c;
+    --ink: #f2ead9;
+    --ink-muted: #9c9284;
+    --ink-faint: #6b6355;
+    --rani: #2a2419;
+    --danger: #b9563f;
+    --radius: 16px;
+    --serif: 'Fraunces', serif;
+    --sans: 'Inter', sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+  html,body{
+    height:100%;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,164,105,0.08), transparent),
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    overflow:hidden;
+  }
+
+  #app{ height:100vh; width:100vw; position:relative; }
+
+  .screen{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .5s ease;
+  }
+  .screen.active{ opacity:1; pointer-events:auto; }
+
+  ::selection{ background:var(--gold); color:#14120e; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar{ width:6px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:var(--gold-dim); border-radius:10px; }
+
+  /* ---------------- LOGIN SCREEN ---------------- */
+  #gate{
+    flex-direction:column; gap:40px; padding:24px;
+  }
+  .brand{
+    text-align:center;
+  }
+  .brand .mark{
+    font-family:var(--serif); font-weight:500; font-style:italic;
+    font-size:15px; letter-spacing:0.3em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:10px; opacity:0.9;
+  }
+  .brand h1{
+    font-family:var(--serif); font-weight:300; font-size:44px;
+    letter-spacing:0.01em; color:var(--ink);
+  }
+  .brand .sub{
+    margin-top:10px; color:var(--ink-muted); font-size:13.5px;
+    letter-spacing:0.02em;
+  }
+
+  .gate-icon{
+    width:64px; height:64px; border-radius:50%; margin:0 auto 22px;
+    display:flex; align-items:center; justify-content:center; font-size:26px;
+    background:radial-gradient(circle at 30% 30%, #3a3323, #201c14);
+    border:1px solid var(--hairline);
+  }
+  .setup-note{
+    max-width:340px; text-align:center; font-size:12px; color:var(--ink-faint);
+    line-height:1.6; border-top:1px solid var(--hairline); padding-top:16px;
+  }
+  .setup-note b{ color:var(--gold-dim); }
+  .setup-link{
+    color:var(--gold); text-decoration:none; border-bottom:1px solid var(--gold-dim); cursor:pointer;
+  }
+
+  /* ---------------- FIREBASE CONNECT CARD ---------------- */
+  #connectCard{
+    flex-direction:column; gap:18px; width:min(420px, 88vw);
+    background:linear-gradient(155deg, var(--surface-raised), var(--surface));
+    border:1px solid var(--hairline); border-radius:var(--radius);
+    padding:28px; position:fixed; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 40px 80px -30px rgba(0,0,0,0.7);
+    display:none; z-index:50;
+  }
+  #connectCard.show{ display:flex; }
+  #connectCard h3{ font-family:var(--serif); font-weight:500; font-size:20px; color:var(--gold-soft); }
+  #connectCard p{ font-size:12.5px; color:var(--ink-muted); line-height:1.6; }
+  #connectCard textarea{
+    width:100%; min-height:120px; resize:vertical;
+    background:#0f0d09; border:1px solid var(--hairline); border-radius:10px;
+    color:var(--ink); font-family:monospace; font-size:12px; padding:12px;
+    outline:none;
+  }
+  #connectCard textarea:focus{ border-color:var(--gold); }
+  .btn-row{ display:flex; gap:10px; justify-content:flex-end; }
+  .btn{
+    font-family:var(--sans); font-size:13px; font-weight:600; letter-spacing:0.02em;
+    padding:10px 18px; border-radius:10px; border:1px solid var(--hairline);
+    background:transparent; color:var(--ink-muted); cursor:pointer;
+    transition:all .25s ease;
+  }
+  .btn:hover{ border-color:var(--gold); color:var(--ink); }
+  .btn.primary{
+    background:linear-gradient(155deg, var(--gold-soft), var(--gold));
+    color:#20190f; border:none;
+  }
+  .btn.primary:hover{ filter:brightness(1.08); }
+  #connectError{ font-size:12px; color:var(--danger); display:none; }
+
+  /* ---------------- CHAT SCREEN ---------------- */
+  #chat{ flex-direction:column; align-items:stretch; }
+
+  .chat-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 22px; border-bottom:1px solid var(--hairline);
+    background:linear-gradient(180deg, rgba(38,33,23,0.6), transparent);
+    backdrop-filter:blur(6px);
+  }
+  .chat-header .who{ display:flex; align-items:center; gap:12px; }
+  .chat-header .avatar{
+    width:38px; height:38px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #3a3323, #201c14);
+    border:1px solid var(--hairline); display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-size:15px; color:var(--gold-soft);
+  }
+  .chat-header .name{ font-family:var(--serif); font-size:17px; letter-spacing:0.01em; }
+  .chat-header .status{ font-size:10.5px; color:var(--ink-faint); letter-spacing:0.06em; text-transform:uppercase; }
+  .status.online::before{ content:'●'; color:#7fae6f; margin-right:5px; font-size:8px; }
+
+  .header-actions{ display:flex; gap:8px; align-items:center; }
+  .icon-btn{
+    width:36px; height:36px; border-radius:10px; border:1px solid transparent;
+    background:transparent; color:var(--ink-muted); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s ease;
+  }
+  .icon-btn:hover{ background:var(--surface-raised); border-color:var(--hairline); color:var(--gold); }
+  .icon-btn svg{ width:17px; height:17px; }
+
+  #messages{
+    flex:1; overflow-y:auto; padding:26px 22px;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .empty-state{
+    margin:auto; text-align:center; color:var(--ink-faint);
+  }
+  .empty-state .glyph{ font-family:var(--serif); font-style:italic; font-size:28px; color:var(--gold-dim); margin-bottom:10px; }
+  .empty-state p{ font-size:13px; }
+
+  .day-divider{
+    display:flex; align-items:center; gap:12px; margin:22px 0 14px;
+    color:var(--ink-faint); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase;
+  }
+  .day-divider::before, .day-divider::after{ content:''; flex:1; height:1px; background:var(--hairline); }
+  .day-divider .diamond{ width:5px; height:5px; background:var(--gold-dim); transform:rotate(45deg); flex:none; }
+
+  .row{ display:flex; margin:3px 0; max-width:100%; }
+  .row.me{ justify-content:flex-end; }
+  .row.rani{ justify-content:flex-start; }
+
+  .bubble-wrap{ display:flex; align-items:center; gap:8px; max-width:74%; }
+  .row.me .bubble-wrap{ flex-direction:row-reverse; }
+
+  .bubble{
+    padding:11px 15px; border-radius:16px; font-size:14.5px; line-height:1.5;
+    position:relative; word-wrap:break-word; white-space:pre-wrap;
+    animation:rise .3s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes rise{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:translateY(0); } }
+
+  .row.me .bubble{
+    background:linear-gradient(155deg, var(--gold-soft), var(--gold));
+    color:#231a0d; border-bottom-right-radius:5px;
+  }
+  .row.rani .bubble{
+    background:var(--surface-raised);
+    border:1px solid var(--hairline);
+    color:var(--ink); border-bottom-left-radius:5px;
+  }
+
+  .bubble .time{
+    display:block; margin-top:4px; font-size:9.5px; letter-spacing:0.04em;
+    opacity:0.55; text-align:right;
+  }
+  .row.rani .bubble .time{ text-align:left; }
+
+  .del-btn{
+    width:26px; height:26px; border-radius:50%; border:1px solid var(--hairline);
+    background:var(--surface); color:var(--ink-faint); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; flex:none;
+    opacity:0; transition:opacity .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .bubble-wrap:hover .del-btn{ opacity:1; }
+  .del-btn:hover{ color:var(--danger); border-color:var(--danger); }
+  .del-btn svg{ width:12px; height:12px; }
+
+  .composer{
+    display:flex; align-items:flex-end; gap:12px;
+    padding:16px 20px 20px; border-top:1px solid var(--hairline);
+    background:linear-gradient(0deg, rgba(28,25,18,0.5), transparent);
+  }
+  .composer textarea{
+    flex:1; resize:none; max-height:120px; min-height:22px;
+    background:var(--surface); border:1px solid var(--hairline); border-radius:14px;
+    color:var(--ink); font-family:var(--sans); font-size:14.5px; line-height:1.5;
+    padding:12px 16px; outline:none; transition:border-color .2s ease;
+  }
+  .composer textarea:focus{ border-color:var(--gold); }
+  .composer textarea::placeholder{ color:var(--ink-faint); }
+
+  .send-btn{
+    width:44px; height:44px; border-radius:50%; border:none; flex:none;
+    background:linear-gradient(155deg, var(--gold-soft), var(--gold));
+    color:#231a0d; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:transform .2s cubic-bezier(.3,1.5,.5,1), filter .2s ease;
+  }
+  .send-btn:hover{ filter:brightness(1.1); transform:scale(1.05); }
+  .send-btn:active{ transform:scale(.92); }
+  .send-btn:disabled{ opacity:.4; cursor:default; transform:none; filter:none; }
+  .send-btn svg{ width:17px; height:17px; margin-left:2px; }
+
+  /* ---------------- MODAL (clear all / delete confirm) ---------------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(10,9,6,0.65);
+    backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; z-index:100;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal{
+    width:min(340px, 86vw);
+    background:linear-gradient(155deg, var(--surface-raised), var(--surface));
+    border:1px solid var(--hairline); border-radius:var(--radius);
+    padding:26px; text-align:center;
+    box-shadow:0 40px 80px -30px rgba(0,0,0,0.7);
+    animation:pop .25s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes pop{ from{ opacity:0; transform:scale(.94); } to{ opacity:1; transform:scale(1); } }
+  .modal .glyph{ color:var(--danger); font-size:26px; margin-bottom:10px; font-family:var(--serif); font-style:italic; }
+  .modal h4{ font-family:var(--serif); font-weight:500; font-size:18px; margin-bottom:8px; }
+  .modal p{ font-size:12.5px; color:var(--ink-muted); line-height:1.6; margin-bottom:22px; }
+  .modal .btn-row{ justify-content:center; }
+  .btn.danger{ background:linear-gradient(155deg, #c4664c, var(--danger)); color:#fff; border:none; }
+  .btn.danger:hover{ filter:brightness(1.1); }
+
+  .toast{
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--surface-raised); border:1px solid var(--hairline);
+    color:var(--ink); font-size:12.5px; padding:11px 20px; border-radius:12px;
+    opacity:0; pointer-events:none; transition:all .35s cubic-bezier(.2,.8,.2,1);
+    z-index:200;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media (max-width:480px){
+    .brand h1{ font-size:34px; }
+    #messages{ padding:20px 14px; }
+    .bubble-wrap{ max-width:86%; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- GATE (username asked via browser prompt) -->
+  <div class="screen active" id="gate">
+    <div class="brand">
+      <div class="gate-icon" id="gateIcon">💬</div>
+      <div class="mark">Private Correspondence</div>
+      <h1>💬 ChatBox</h1>
+      <div class="sub" id="gateSub">Enter your username in the browser prompt…</div>
+    </div>
+    <div class="setup-note">
+      Runs on your own <b>Firebase</b> project. Edit <b>FIREBASE_CONFIG</b> in the file,
+      or <span class="setup-link" id="openConnect">connect one now</span> for this session.
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="screen" id="chat">
+    <div class="chat-header">
+      <div class="who">
+        <div class="avatar" id="peerAvatar">R</div>
+        <div>
+          <div class="name" id="peerName">Rani</div>
+          <div class="status online">Firebase connected</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="clearBtn" title="Clear all chats">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m2 0-.8 12.1a2 2 0 0 1-2 1.9H7.8a2 2 0 0 1-2-1.9L5 7"/></svg>
+        </button>
+        <button class="icon-btn" id="switchBtn" title="Switch user">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 2l4 4-4 4M3 12v-2a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 12v2a4 4 0 0 1-4 4H3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="messages"></div>
+
+    <div class="composer">
+      <textarea id="msgInput" placeholder="Write a message…" rows="1"></textarea>
+      <button class="send-btn" id="sendBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- FIREBASE CONNECT CARD -->
+  <div id="connectCard">
+    <h3>Connect Firebase</h3>
+    <p>Paste your Firebase web app config object (from Project settings → General → Your apps). This only applies to the current browser session.</p>
+    <textarea id="configInput" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...", ...}'></textarea>
+    <div id="connectError">Couldn't parse that config — check the format and try again.</div>
+    <div class="btn-row">
+      <button class="btn" id="cancelConnect">Cancel</button>
+      <button class="btn primary" id="submitConnect">Connect</button>
+    </div>
+  </div>
+
+  <!-- CLEAR ALL MODAL -->
+  <div class="modal-overlay" id="clearModal">
+    <div class="modal">
+      <div class="glyph">✦</div>
+      <h4>Clear all chats?</h4>
+      <p>Every message in this conversation will be permanently deleted for both of you. This can't be undone.</p>
+      <div class="btn-row">
+        <button class="btn" id="cancelClear">Cancel</button>
+        <button class="btn danger" id="confirmClear">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+  // ---------------- STATE ----------------
+  let db = null;
+  let unsubscribe = null;
+  let currentUser = null;   // "Me" or "Rani"
+  let peerUser = null;
+  const COLLECTION = "chatbox_messages";
+
+  const el = (id) => document.getElementById(id);
+  const showScreen = (id) => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    el(id).classList.add('active');
+  };
+
+  function toast(msg){
+    const t = el('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._h);
+    toast._h = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // ---------------- FIREBASE INIT ----------------
+  function isPlaceholderConfig(cfg){
+    return !cfg || cfg.apiKey === "YOUR_API_KEY" || !cfg.apiKey || !cfg.projectId;
+  }
+
+  function initFirebase(cfg){
+    try{
+      if (!cfg || isPlaceholderConfig(cfg)) return false;
+
+      if (firebase.apps && firebase.apps.length) {
+        firebase.apps.forEach(a => a.delete());
+      }
+
+      firebase.initializeApp(cfg);
+      db = firebase.firestore();
+      return true;
+    } catch(e){
+      console.error("Firebase initialization failed:", e);
+      db = null;
+      return false;
+    }
+  }
+
+  let firebaseReady = false;
+
+  // ---------------- USERNAME ----------------
+  const ALLOWED_USERS = ['Me', 'Rani'];
+
+  function showDenied(msg){
+    el('gateIcon').textContent = '✕';
+    el('gateSub').textContent = msg;
+  }
+
+  function askUsername(){
+    el('gateIcon').textContent = '💬';
+    el('gateSub').textContent = 'Enter your username in the browser prompt…';
+
+    const raw = window.prompt("Enter your username (Me or Rani):");
+
+    if (raw === null){
+      showDenied('Username entry cancelled.');
+      return;
+    }
+
+    const name = raw.trim();
+
+    if (!ALLOWED_USERS.includes(name)){
+      askUsername();
+      return;
+    }
+
+    currentUser = name;
+    peerUser = name === 'Me' ? 'Rani' : 'Me';
+
+    // Firebase is initialized only after a valid username is supplied.
+    firebaseReady = initFirebase(FIREBASE_CONFIG);
+
+    if (!firebaseReady){
+      el('connectCard').classList.add('show');
+      el('gateSub').textContent = 'Firebase needs to be connected before entering the chat.';
+      return;
+    }
+
+    enterChat();
+  }
+
+  el('openConnect').addEventListener('click', () => el('connectCard').classList.add('show'));
+  el('cancelConnect').addEventListener('click', () => el('connectCard').classList.remove('show'));
+
+  el('submitConnect').addEventListener('click', () => {
+    const raw = el('configInput').value.trim();
+
+    try{
+      const cfg = JSON.parse(raw);
+
+      if (isPlaceholderConfig(cfg)) {
+        throw new Error('incomplete');
+      }
+
+      const ok = initFirebase(cfg);
+
+      if (!ok) {
+        throw new Error('init failed');
+      }
+
+      firebaseReady = true;
+      el('connectError').style.display = 'none';
+      el('connectCard').classList.remove('show');
+
+      toast('Firebase connected for this session');
+
+      // Username has already been entered, so go directly to chat.
+      enterChat();
+    } catch(e){
+      console.error("Firebase connection error:", e);
+      el('connectError').style.display = 'block';
+    }
+  });
+
+  // IMPORTANT:
+  // Ask for the username first. Firebase can never prevent the prompt
+  // from appearing because Firebase initialization happens afterwards.
+  askUsername();
+
+  // ---------------- CHAT ----------------
+  function enterChat(){
+    el('peerName').textContent = peerUser;
+    el('peerAvatar').textContent = peerUser[0];
+    showScreen('chat');
+    listenMessages();
+    el('msgInput').focus();
+  }
+
+  el('switchBtn').addEventListener('click', () => {
+    if (unsubscribe) unsubscribe();
+    currentUser = null; peerUser = null;
+    el('messages').innerHTML = '';
+    showScreen('gate');
+    askUsername();
+  });
+
+  function formatTime(date){
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  function formatDay(date){
+    const today = new Date();
+    const yest = new Date(); yest.setDate(today.getDate() - 1);
+    const sameDay = (a,b) => a.toDateString() === b.toDateString();
+    if (sameDay(date, today)) return 'Today';
+    if (sameDay(date, yest)) return 'Yesterday';
+    return date.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  function renderMessages(docs){
+    const container = el('messages');
+    container.innerHTML = '';
+
+    if (!docs.length){
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="glyph">✦</div>
+          <p>No messages yet — say hello.</p>
+        </div>`;
+      return;
+    }
+
+    let lastDay = null;
+    docs.forEach(doc => {
+      const data = doc.data();
+      const ts = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate() : new Date();
+      const dayLabel = formatDay(ts);
+
+      if (dayLabel !== lastDay){
+        const divider = document.createElement('div');
+        divider.className = 'day-divider';
+        divider.innerHTML = `<span class="diamond"></span><span>${dayLabel}</span><span class="diamond"></span>`;
+        container.appendChild(divider);
+        lastDay = dayLabel;
+      }
+
+      const isMe = data.sender === currentUser;
+      const row = document.createElement('div');
+      row.className = `row ${isMe ? 'me' : 'rani'}`;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'bubble-wrap';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.innerHTML = `${escapeHTML(data.text)}<span class="time">${formatTime(ts)}</span>`;
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'del-btn';
+      delBtn.title = 'Delete message';
+      delBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m2 0-.8 12.1a2 2 0 0 1-2 1.9H7.8a2 2 0 0 1-2-1.9L5 7"/></svg>`;
+      delBtn.addEventListener('click', () => deleteMessage(doc.id));
+
+      wrap.appendChild(bubble);
+      wrap.appendChild(delBtn);
+      row.appendChild(wrap);
+      container.appendChild(row);
+    });
+
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function escapeHTML(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function listenMessages(){
+    if (unsubscribe) unsubscribe();
+    unsubscribe = db.collection(COLLECTION)
+      .orderBy('createdAt', 'asc')
+      .onSnapshot(snap => {
+        renderMessages(snap.docs);
+      }, err => {
+        console.error(err);
+        toast('Connection error — check Firestore rules');
+      });
+  }
+
+  async function sendMessage(){
+    const input = el('msgInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    autoGrow(input);
+    updateSendState();
+    try{
+      await db.collection(COLLECTION).add({
+        text,
+        sender: currentUser,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch(e){
+      console.error(e);
+      toast('Message failed to send');
+    }
+  }
+
+  async function deleteMessage(id){
+    try{
+      await db.collection(COLLECTION).doc(id).delete();
+    } catch(e){
+      console.error(e);
+      toast('Could not delete message');
+    }
+  }
+
+  async function clearAllMessages(){
+    try{
+      const snap = await db.collection(COLLECTION).get();
+      const batch = db.batch();
+      snap.docs.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      toast('All messages cleared');
+    } catch(e){
+      console.error(e);
+      toast('Could not clear chats');
+    }
+  }
+
+  // ---------------- COMPOSER ----------------
+  const input = el('msgInput');
+  function autoGrow(t){ t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 120) + 'px'; }
+  function updateSendState(){ el('sendBtn').disabled = input.value.trim().length === 0; }
+
+  input.addEventListener('input', () => { autoGrow(input); updateSendState(); });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  el('sendBtn').addEventListener('click', sendMessage);
+
+  // ---------------- CLEAR MODAL ----------------
+  el('clearBtn').addEventListener('click', () => el('clearModal').classList.add('show'));
+  el('cancelClear').addEventListener('click', () => el('clearModal').classList.remove('show'));
+  el('confirmClear').addEventListener('click', () => {
+    el('clearModal').classList.remove('show');
+    clearAllMessages();
+  });
+</script>
+</body>
+</html>
