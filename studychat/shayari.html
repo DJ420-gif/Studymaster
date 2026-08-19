@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
-  <h2>📩 Study Master Chat</h2>
+  <h2>ChatBox 💬</h2>
   <!DOCTYPE html>
   <!-- 🔗 Top Right Link Button -->
   <a id="topLinkButton" href="shayari.html" target="_blank">🔗 Shayari for you</a>
@@ -300,7 +300,7 @@
   const db = getDatabase(app);
   const chatRef = ref(db, "chatroom");
 
-  const allowedUsers = ["djkumar", "My life"];
+  const allowedUsers = ["Me", "Rani"];
   const params = new URLSearchParams(window.location.search);
   let username = params.get("user") || prompt("Enter your username:");
 
