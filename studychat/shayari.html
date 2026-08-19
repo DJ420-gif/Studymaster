@@ -310,45 +310,6 @@
     throw new Error("Unauthorized user");
   }
 
-  // ── Last Seen Logic ──
-  try {
-    const presenceRef = ref(db, `presence/${username}`);
-    const lastSeenRef = ref(db, `lastSeen/${username}`);
-
-    set(presenceRef, true);
-    onDisconnect(presenceRef).remove();
-    onDisconnect(lastSeenRef).set(serverTimestamp());
-
-    const otherUser = allowedUsers.find(u => u !== username);
-    const otherPresenceRef = ref(db, `presence/${otherUser}`);
-    const otherLastSeenRef = ref(db, `lastSeen/${otherUser}`);
-
-    onValue(otherPresenceRef, (snap) => {
-      const statusEl = document.getElementById("lastSeenStatus");
-      if (!statusEl) return;
-      if (snap.exists()) {
-        statusEl.textContent = `🟢 ${otherUser} is Online`;
-        statusEl.style.color = "#22c55e";
-      } else {
-        onValue(otherLastSeenRef, (lsnap) => {
-          if (lsnap.exists()) {
-            const ts = lsnap.val();
-            const date = new Date(ts);
-            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const dateStr = date.toLocaleDateString([], { day: '2-digit', month: 'short' });
-            statusEl.textContent = `⚪ Last seen ${dateStr} at ${timeStr}`;
-            statusEl.style.color = "#aaa";
-          } else {
-            statusEl.textContent = `⚪ ${otherUser} Offline`;
-            statusEl.style.color = "#aaa";
-          }
-        }, { onlyOnce: true });
-      }
-    });
-  } catch(e) {
-    console.error("Presence error:", e);
-  }
-
   // ── Messages ──
   onChildAdded(chatRef, (data) => {
     const msg = data.val();
