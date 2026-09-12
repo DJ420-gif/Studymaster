@@ -293,15 +293,7 @@
   const db = getDatabase(app);
   const chatRef = ref(db, "chatroom");
 
-  const allowedUsers = ["djkumar", "My life"];
-  const params = new URLSearchParams(window.location.search);
-  let username = params.get("user") || prompt("Enter your username:");
 
-  if (!allowedUsers.includes(username)) {
-    alert("❌ Access Denied. Only authorized users can access this chat.");
-    document.body.innerHTML = "<h2 style='text-align:center;color:red;'>❌ Access Denied</h2>";
-    throw new Error("Unauthorized user");
-  }
 
   onChildAdded(chatRef, (data) => {
     const msg = data.val();
