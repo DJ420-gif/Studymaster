@@ -293,7 +293,7 @@ const firebaseConfig = {
   const db = getDatabase(app);
   const chatRef = ref(db, "chatroom");
 
-  const allowedUsers = ["Me", "Rani"];
+  const allowedUsers = ["Me", "Love"];
   const params = new URLSearchParams(window.location.search);
   let username = params.get("user") || prompt("Enter your username:");
 
