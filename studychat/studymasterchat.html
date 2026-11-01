@@ -1003,7 +1003,7 @@ const firebaseConfig = {
     new MutationObserver(function (list) {
       list.forEach(function (m) {
         m.addedNodes.forEach(function (n) {
-          if (n.nodeType === 1 && n.classList.contains("message")) { decorate(n); elQueue.push(n); if (live && n.classList.contains("me") && window.ChatUI) window.ChatUI.burst(n); }
+        if (n.nodeType === 1 && n.classList.contains("message")) { decorate(n); elQueue.push(n); }
         });
       });
       pair();
@@ -1045,13 +1045,20 @@ const firebaseConfig = {
     document.addEventListener("chatui:change", scheduleSeen);
   })();
 </script>
-  <!-- ☁️ CLOUD SETTINGS: saves each username's settings in Firebase -->
+<!-- ☁️ CLOUD SETTINGS with a Save button (saved per username in Firebase) -->
+<style>
+  #saveBar{padding:12px 18px 16px;border-top:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:6px}
+  #saveBtn{width:100%;padding:11px;border:none;border-radius:12px;background:var(--me-bg);color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:transform .15s ease,opacity .2s ease}
+  #saveBtn:active{transform:scale(.97)}
+  #saveBtn:disabled{opacity:.5;cursor:default}
+  #saveMsg{font-size:11px;text-align:center;color:var(--muted);min-height:14px}
+</style>
 <script type="module">
   import { getApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   (function () {
-    const allowed = ["Me", "Queen"];
+    const allowed = ["Me", "Rani"];
     const me = new URLSearchParams(window.location.search).get("user") || window.__chatUser;
     if (!allowed.includes(me)) return;
     if (!getApps().length || !window.ChatUI) return;
@@ -1061,21 +1068,34 @@ const firebaseConfig = {
     // if your Firebase rules block this path, use: ref(db, "chatroom/_settings_" + me)
     const cloudRef = ref(db, "chatSettings/" + me);
 
-    let applying = false, lastJson = "", timer = null;
+    // Save button at the bottom of the settings panel
+    const panel = document.getElementById("settingsPanel");
+    const bar = document.createElement("div");
+    bar.id = "saveBar";
+    const btn = document.createElement("button");
+    btn.id = "saveBtn";
+    btn.type = "button";
+    btn.textContent = "💾 Save settings";
+    const msg = document.createElement("div");
+    msg.id = "saveMsg";
+    bar.appendChild(btn);
+    bar.appendChild(msg);
+    panel.appendChild(bar);
 
     const note = document.querySelector(".sp-note");
-    if (note) note.textContent = "☁️ Saved for " + me + " — same settings on any device or incognito";
+    if (note) note.textContent = "Pick your settings, then press Save — kept for " + me + " on any device.";
 
-    function snapshotJson() { return JSON.stringify(UI.state); }
+    let applying = false;
+    let savedJson = JSON.stringify(UI.state);
 
-    function save() {
-      const json = snapshotJson();
-      if (json === lastJson) return;
-      lastJson = json;
-      set(cloudRef, Object.assign({}, UI.state)).catch(function () { lastJson = ""; });
+    function nowJson() { return JSON.stringify(UI.state); }
+    function refresh() {
+      const dirty = nowJson() !== savedJson;
+      btn.disabled = !dirty;
+      msg.textContent = dirty ? "Unsaved changes — press Save" : "✓ All changes saved";
     }
 
-    // load this username's saved settings (and keep devices in sync)
+    // load this username's saved settings
     onValue(cloudRef, function (snap) {
       const v = snap.val();
       if (v && typeof v === "object") {
@@ -1084,18 +1104,31 @@ const firebaseConfig = {
           if (typeof v[k] === "string" && v[k] !== UI.state[k]) UI.set(k, v[k]);
         });
         applying = false;
-        lastJson = snapshotJson();
-      } else {
-        save();   // first time for this username: store what's on screen now
       }
+      savedJson = nowJson();
+      refresh();
     }, function () {});
 
-    // save whenever this user changes anything in the settings panel
+    // changes are only previewed until Save is pressed
     document.addEventListener("chatui:change", function () {
-      if (applying) return;
-      clearTimeout(timer);
-      timer = setTimeout(save, 400);
+      if (!applying) refresh();
     });
+
+    btn.addEventListener("click", function () {
+      const json = nowJson();
+      btn.disabled = true;
+      msg.textContent = "Saving…";
+      set(cloudRef, Object.assign({}, UI.state)).then(function () {
+        savedJson = json;
+        refresh();
+        msg.textContent = "✓ Saved for " + me;
+      }).catch(function () {
+        btn.disabled = false;
+        msg.textContent = "❌ Could not save — check Firebase rules";
+      });
+    });
+
+    refresh();
   })();
 </script>
 </body>
