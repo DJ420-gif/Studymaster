@@ -1002,7 +1002,7 @@ const firebaseConfig = {
     new MutationObserver(function (list) {
       list.forEach(function (m) {
         m.addedNodes.forEach(function (n) {
-        if (n.nodeType === 1 && n.classList.contains("message")) { decorate(n); elQueue.push(n); }
+        if (n.nodeType === 1 && n.classList.contains("message")) { decorate(n); elQueue.push(n); if (live && n.classList.contains("me") && window.ChatUI) window.ChatUI.burst(n); }
         });
       });
       pair();
