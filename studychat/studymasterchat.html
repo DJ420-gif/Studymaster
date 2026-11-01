@@ -1045,5 +1045,57 @@ const firebaseConfig = {
     document.addEventListener("chatui:change", scheduleSeen);
   })();
 </script>
+  script type="module">
+  import { getApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  (function () {
+    const allowed = ["Me", "Queen"];
+    const me = new URLSearchParams(window.location.search).get("user") || window.__chatUser;
+    if (!allowed.includes(me)) return;
+    if (!getApps().length || !window.ChatUI) return;
+
+    const UI = window.ChatUI;
+    const db = getDatabase(getApp());
+    // 👇 if your Firebase rules block this path, use: ref(db, "chatroom/_settings_" + me)
+    const cloudRef = ref(db, "chatSettings/" + me);
+
+    let applying = false, lastJson = "", timer = null;
+
+    const note = document.querySelector(".sp-note");
+    if (note) note.textContent = "☁️ Saved for " + me + " — same settings on any device or incognito";
+
+    function snapshotJson() { return JSON.stringify(UI.state); }
+
+    function save() {
+      const json = snapshotJson();
+      if (json === lastJson) return;
+      lastJson = json;
+      set(cloudRef, Object.assign({}, UI.state)).catch(function () { lastJson = ""; });
+    }
+
+    // load this username's saved settings (and keep devices in sync)
+    onValue(cloudRef, function (snap) {
+      const v = snap.val();
+      if (v && typeof v === "object") {
+        applying = true;
+        Object.keys(UI.state).forEach(function (k) {
+          if (typeof v[k] === "string" && v[k] !== UI.state[k]) UI.set(k, v[k]);
+        });
+        applying = false;
+        lastJson = snapshotJson();
+      } else {
+        save();   // first time for this username: store what's on screen now
+      }
+    }, function () {});
+
+    // save whenever this user changes anything in ⚙️ Settings
+    document.addEventListener("chatui:change", function () {
+      if (applying) return;
+      clearTimeout(timer);
+      timer = setTimeout(save, 400);
+    });
+  })();
+</script>
 </body>
 </html>
