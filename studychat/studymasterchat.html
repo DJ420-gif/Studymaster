@@ -1051,7 +1051,7 @@ const firebaseConfig = {
   import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   (function () {
-    const allowed = ["Me", "Rani"];
+    const allowed = ["Me", "Queen"];
     const me = new URLSearchParams(window.location.search).get("user") || window.__chatUser;
     if (!allowed.includes(me)) return;
     if (!getApps().length || !window.ChatUI) return;
