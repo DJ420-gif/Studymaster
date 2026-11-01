@@ -838,12 +838,13 @@ const firebaseConfig = {
   appId: "1:63911511566:web:8f92c936da406b2ec9de5f",
   measurementId: "G-5BTJE6S99C"
 };
+  
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const chatRef = ref(db, "chatroom");
 
-  const allowedUsers = ["Me", "Rani"];
+  const allowedUsers = ["Me", "Queen"];
   const params = new URLSearchParams(window.location.search);
   let username = params.get("user") || prompt("Enter your username:");
 
