@@ -395,24 +395,7 @@
         if (document.visibilityState === 'visible' && baseTitle !== null) { unread = 0; document.title = baseTitle; }
       });
 
-      function burst(el) {
-        if (st.burst !== 'on' || !el || !el.getBoundingClientRect || !document.body) return;
-        var r = el.getBoundingClientRect(), em = ['💗', '💖', '💕', '💞'];
-        for (var i = 0; i < 7; i++) {
-          (function () {
-            var s = document.createElement('span');
-            s.className = 'burst';
-            s.textContent = em[Math.floor(Math.random() * em.length)];
-            s.style.left = (r.right - 14) + 'px';
-            s.style.top = (r.bottom - 10) + 'px';
-            s.style.fontSize = (12 + Math.random() * 10) + 'px';
-            s.style.setProperty('--bx', (Math.random() * 90 - 70) + 'px');
-            s.style.setProperty('--by', (-30 - Math.random() * 90) + 'px');
-            document.body.appendChild(s);
-            setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 1000);
-          })();
-        }
-      }
+      
 
       window.ChatUI = {
         state: st,
