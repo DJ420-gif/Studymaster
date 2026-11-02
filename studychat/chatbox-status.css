@@ -1,0 +1,122 @@
+/*
+ * chatbox-status.css
+ * Styles for: ✓ sent tick, ✓✓ seen tick, typing status and online status.
+ * Link it in <head>:   <link rel="stylesheet" href="chatbox-status.css?v=2">
+ * (It uses your theme variables --text, --muted, --panel, --line, --tick when they exist.)
+ */
+
+/* ───────── ticks inside MY messages (bottom-right corner) ───────── */
+.message .cbs-tick {
+  display: none;
+  position: absolute;
+  right: 9px;
+  bottom: 8px;
+  width: 17px;
+  height: 17px;
+  line-height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.message .cbs-tick svg { display: block; width: 100%; height: 100%; }
+
+/* single tick = stored in Firebase */
+.message .cbs-tick[data-s="sent"] { display: block; color: rgba(255, 255, 255, .82); }
+/* double tick = seen by the other person */
+.message .cbs-tick[data-s="seen"] { display: block; color: var(--tick, #7dd3fc); }
+
+/* keep the time text from sliding under the tick */
+.message.cbs-has .time { padding-right: 20px; }
+html[data-times="off"] .message.cbs-has { padding-right: 34px; }
+/* Settings → "Show seen ticks" switched off */
+html[data-ticks="off"] .message .cbs-tick { display: none !important; }
+
+/* ───────── status line under the page title ───────── */
+#cbsStatus {
+  min-height: 26px;               /* always reserves its height, so nothing jumps */
+  margin: -4px 0 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#cbsStatus .cbs-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 13px;
+  border-radius: 14px;
+  font-size: 13px;
+  color: var(--text, #eee);
+  background: var(--panel, #1e1e2a);
+  border: 1px solid var(--line, rgba(255, 255, 255, .12));
+  opacity: 0;                      /* offline = nothing visible */
+  transform: translateY(-3px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+#cbsStatus.on .cbs-pill { opacity: 1; transform: none; }
+
+/* green dot ahead of the username (Instagram style) */
+#cbsStatus .cbs-dot {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: cbsPulse 1.8s infinite;
+}
+#cbsStatus .cbs-name { font-weight: 600; }
+#cbsStatus .cbs-txt  { color: var(--muted, #9aa1bd); }
+
+/* animated "typing…" dots */
+#cbsStatus .cbs-dots i {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: cbsBounce 1.2s infinite;
+}
+#cbsStatus .cbs-dots i:nth-child(2) { animation-delay: .15s; }
+#cbsStatus .cbs-dots i:nth-child(3) { animation-delay: .30s; }
+
+@keyframes cbsPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, .55); }
+  70%  { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+@keyframes cbsBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: .5; }
+  30%           { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ───────── helper messages (only shown when something is wrong) ───────── */
+#cbsWarn {
+  display: none;
+  max-width: 440px;
+  margin: 0 0 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  color: #fecaca;
+  background: rgba(220, 38, 38, .18);
+  border: 1px solid rgba(220, 38, 38, .5);
+  border-radius: 10px;
+}
+#cbsWarn.show { display: block; }
+
+/* open the page with ?debug=1 to see this checklist */
+#cbsDebug {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 2000;
+  max-width: min(380px, 92vw);
+  padding: 8px 10px;
+  font: 11px/1.5 ui-monospace, Menlo, Consolas, monospace;
+  color: #d1fae5;
+  background: rgba(0, 0, 0, .85);
+  border-radius: 10px;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
