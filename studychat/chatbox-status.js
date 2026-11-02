@@ -3,7 +3,7 @@
  *
  *   ✓   single tick  : your message is stored in Firebase
  *   ✓✓  double tick  : the other person has seen it
- *   ●   green dot + "Queen is typing…" / "Queen · online" under the page title
+ *   ●   green dot + "Rani is typing…" / "Rani · online" under the page title
  *       (nothing is shown when the other person is offline)
  *
  * It does NOT change your chat script or your Firebase setup. It only listens to the
