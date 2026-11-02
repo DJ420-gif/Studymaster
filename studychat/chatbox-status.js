@@ -62,7 +62,7 @@
     var theirs = document.querySelector('.message.other .username');
     if (theirs) {
       var t = theirs.textContent.trim();
-      return t === 'Me' ? 'Rani' : t === 'Rani' ? 'Me' : null;
+      return t === 'Me' ? 'Queen' : t === 'Queen' ? 'Me' : null;
     }
     return null;
   }
@@ -82,7 +82,7 @@
   async function start() {
     var me = await findMe();
     if (!me) return;
-    var other = me === 'Me' ? 'Rani' : 'Me';
+    var other = me === 'Me' ? 'Queen' : 'Me';
 
     var appMod = await import(BASE + 'firebase-app.js');
     var dbMod = await import(BASE + 'firebase-database.js');
