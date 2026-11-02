@@ -952,98 +952,7 @@ const firebaseConfig = {
   };
 </script>
 
-<!-- ✓✓ SEEN + alerts (separate from the chat script; reuses the same Firebase app) -->
-<script type="module">
-  import { getApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, onChildAdded, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  (function () {
-    const allowed = ["Me", "Rani"];
-    const me = new URLSearchParams(window.location.search).get("user") || window.__chatUser;
-    if (!allowed.includes(me)) return;       // not signed in -> nothing to do
-    if (!getApps().length) return;           // Firebase not started -> nothing to do
-
-    const other = me === "Me" ? "Rani" : "Me";
-    const db = getDatabase(getApp());
-    const chatBox = document.getElementById("chatBox");
-
-    const TICK = '<span class="tick" title="Seen" aria-label="Seen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12.8l4.6 4.6L15 8.5"/><path d="M9.4 16.7l.7.7L22 5.5"/></svg></span>';
-
-    let otherSeen = null;    // newest message key the other person has seen
-    let lastOtherKey = null; // newest message key sent by the other person
-    let written = null;      // last key I told Firebase I have seen
-    let seenTimer = null;
-    let live = false;        // becomes true once the old history has finished loading
-
-    const keyQueue = [];     // message keys (from Firebase) waiting for their element
-    const elQueue = [];      // message elements (from the page) waiting for their key
-
-    function decorate(el) {
-      if (el.classList.contains("me") && !el.querySelector(".tick")) {
-        el.insertAdjacentHTML("beforeend", TICK);
-      }
-    }
-
-    function refreshTicks() {
-      chatBox.querySelectorAll(".message.me").forEach(function (el) {
-        const k = el.dataset.key;
-        el.classList.toggle("seen", !!(k && otherSeen && k <= otherSeen));
-      });
-    }
-
-    function pair() {
-      while (keyQueue.length && elQueue.length) {
-        elQueue.shift().dataset.key = keyQueue.shift();
-      }
-      refreshTicks();
-    }
-
-    chatBox.querySelectorAll(".message").forEach(function (el) { decorate(el); elQueue.push(el); });
-    new MutationObserver(function (list) {
-      list.forEach(function (m) {
-        m.addedNodes.forEach(function (n) {
-        if (n.nodeType === 1 && n.classList.contains("message")) { decorate(n); elQueue.push(n); if (live && n.classList.contains("me") && window.ChatUI) window.ChatUI.burst(n); }
-        });
-      });
-      pair();
-    }).observe(chatBox, { childList: true });
-
-    function markSeen() {
-      if (window.ChatUI && window.ChatUI.state.receipts === "off") return;
-      if (document.visibilityState !== "visible") return;
-      if (!lastOtherKey || lastOtherKey === written) return;
-      written = lastOtherKey;
-      set(ref(db, "chatroom/_seen_" + me), lastOtherKey).catch(function () { written = null; });
-    }
-    function scheduleSeen() {
-      clearTimeout(seenTimer);
-      seenTimer = setTimeout(markSeen, 200);
-    }
-
-    const chatRef = ref(db, "chatroom");
-    onChildAdded(chatRef, function (snap) {
-      const msg = snap.val();
-      if (!msg || typeof msg !== "object" || !allowed.includes(msg.user)) return;
-      keyQueue.push(snap.key);
-      if (msg.user !== me) {
-        lastOtherKey = snap.key;
-        scheduleSeen();
-        if (live && window.ChatUI) window.ChatUI.incoming(msg);
-      }
-      pair();
-    }, function () {});
-    onValue(chatRef, function () { live = true; }, function () {}, { onlyOnce: true });
-
-    onValue(ref(db, "chatroom/_seen_" + other), function (snap) {
-      otherSeen = snap.val();
-      refreshTicks();
-    }, function () {});
-
-    document.addEventListener("visibilitychange", scheduleSeen);
-    window.addEventListener("focus", scheduleSeen);
-    document.addEventListener("chatui:change", scheduleSeen);
-  })();
-</script>
 <!-- ☁️ CLOUD SETTINGS with a Save button (saved per username in Firebase) -->
 <style>
   #saveBar{padding:12px 18px 16px;border-top:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:6px}
@@ -1130,5 +1039,6 @@ const firebaseConfig = {
     refresh();
   })();
 </script>
+  <script defer src="chatbox-status.js"></script>
 </body>
 </html>
