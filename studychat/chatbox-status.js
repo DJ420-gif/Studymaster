@@ -14,7 +14,7 @@
   'use strict';
 
   var FIREBASE_VERSION = '10.12.0';      // keep the same version your chat script uses
-  var ALLOWED = ['Me', 'Rani'];
+  var ALLOWED = ['Me', 'Queen'];
   var TYPING_STOP_MS = 2500;             // "typing…" stops this long after the last key
   var TYPING_REFRESH_MS = 3000;          // how often a "still typing" ping is sent
   var TYPING_EXPIRE_MS = 7000;           // the other side hides "typing…" if pings stop
