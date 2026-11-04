@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Push keys generator</title>
+<style>
+  :root{--bg:#14120e;--card:#1e1b16;--text:#f2ead9;--muted:#9c9284;--line:rgba(255,255,255,.12);--accent:#d94f7e}
+  *{box-sizing:border-box}
+  body{margin:0;padding:22px 16px 60px;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:680px;margin:auto}
+  h1{font-size:22px;margin:0 0 4px}
+  p{color:var(--muted);margin:6px 0 16px}
+  button{border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:600;color:#fff;background:var(--accent);cursor:pointer}
+  button.small{padding:6px 12px;font-size:13px;background:#3a342b}
+  .box{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+  .box h2{font-size:14px;margin:0 0 4px}
+  .box small{color:var(--muted);display:block;margin-bottom:8px}
+  textarea{width:100%;min-height:74px;resize:vertical;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f0d09;color:#d1fae5;font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace}
+  .warn{color:#fecaca}
+  [hidden]{display:none}
+</style>
+</head>
+<body>
+<main>
+  <h1>🔑 Push keys generator</h1>
+  <p>Real notifications (even when the browser is closed) need one pair of keys. They are created here, inside your own browser — nothing is sent anywhere.</p>
+  <button id="go" type="button">Generate keys</button>
+
+  <div id="out" hidden>
+    <div class="box">
+      <h2>1. PUBLIC key</h2>
+      <small>Safe to share. Paste it into <b>chatbox-notify.js</b> (vapidPublicKey) and into the Worker CONFIG (vapidPublicKey).</small>
+      <textarea id="pub" readonly></textarea>
+      <button class="small" data-copy="pub" type="button">Copy</button>
+    </div>
+    <div class="box">
+      <h2>2. PRIVATE key</h2>
+      <small class="warn">Keep it secret. Paste it ONLY into the Worker CONFIG (vapidPrivateJwk). Never put it in the chat website.</small>
+      <textarea id="priv" readonly></textarea>
+      <button class="small" data-copy="priv" type="button">Copy</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  function b64u(bytes) {
+    var s = '';
+    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  async function generateKeys() {
+    var pair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+    var raw = new Uint8Array(await crypto.subtle.exportKey('raw', pair.publicKey));      // 65 bytes
+    var jwk = await crypto.subtle.exportKey('jwk', pair.privateKey);
+    return {
+      publicKey: b64u(raw),
+      privateJwk: JSON.stringify({ kty: 'EC', crv: 'P-256', x: jwk.x, y: jwk.y, d: jwk.d })
+    };
+  }
+
+  document.getElementById('go').addEventListener('click', async function () {
+    var k = await generateKeys();
+    document.getElementById('pub').value = k.publicKey;
+    document.getElementById('priv').value = k.privateJwk;
+    document.getElementById('out').hidden = false;
+  });
+  document.addEventListener('click', function (e) {
+    var id = e.target && e.target.getAttribute && e.target.getAttribute('data-copy');
+    if (!id) return;
+    var ta = document.getElementById(id);
+    ta.select();
+    try { navigator.clipboard.writeText(ta.value); } catch (err) { document.execCommand('copy'); }
+    e.target.textContent = 'Copied ✓';
+    setTimeout(function () { e.target.textContent = 'Copy'; }, 1500);
+  });
+</script>
+</body>
+</html>
