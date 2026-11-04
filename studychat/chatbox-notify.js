@@ -41,7 +41,7 @@
     icon: '',                            // optional icon url for system notifications
 
     // ----- real push (browser closed) -----
-    vapidPublicKey: '',                  // PUBLIC key from chatbox-vapid-keys.html  ('' = push off)
+    vapidPublicKey: 'BB0WNMJ8-ft2A9eV9l4df77SExxkJEnA9qt7oy36AAifsjROMwpgn7loMs1GrxKZ0MNQrE-el3DeIHzuN0TVdNY',                  // PUBLIC key from chatbox-vapid-keys.html  ('' = push off)
     pushPaths: ['chatPush', 'chatroom/_push']   // where this device is saved (first one Firebase allows is used)
   };
 
