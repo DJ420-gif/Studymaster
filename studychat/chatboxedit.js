@@ -220,49 +220,55 @@
       if (el) startEdit(el);
     });
 
-    /* ---------- long press ---------- */
-    var holdTimer = null, startX = 0, startY = 0, pressed = null;
-    var swallow = false, swallowTimer = null;
-    function cancelHold() { clearTimeout(holdTimer); holdTimer = null; pressed = null; }
-    // After a long press your chat script would see the release as a normal click and ask
-    // "Delete this message?". However long the finger stays down, that one click is swallowed.
-    function armSwallow() { swallow = true; clearTimeout(swallowTimer); swallowTimer = setTimeout(function () { swallow = false; }, 20000); }
-    function releaseSwallow() { if (!swallow) return; clearTimeout(swallowTimer); swallowTimer = setTimeout(function () { swallow = false; }, 400); }
+/* ---------- double-click / double-tap ---------- */
 
-    chatBox.addEventListener('pointerdown', function (e) {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
-      var el = closestMe(e.target);
-      if (!el || el.querySelector('.cbe-edit')) return;
-      pressed = el; startX = e.clientX; startY = e.clientY;
-      clearTimeout(holdTimer);
-      holdTimer = setTimeout(function () {
-        holdTimer = null;
-        if (pressed && showMenu(pressed)) armSwallow();
-        pressed = null;
-      }, HOLD_MS);
-    });
-    chatBox.addEventListener('pointermove', function (e) {
-      if (holdTimer && (Math.abs(e.clientX - startX) > MOVE_PX || Math.abs(e.clientY - startY) > MOVE_PX)) cancelHold();
-    });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { chatBox.addEventListener(n, cancelHold); });
-    chatBox.addEventListener('scroll', function () { cancelHold(); hideMenu(); });
+chatBox.addEventListener('dblclick', function (e) {
+  var el = closestMe(e.target);
 
-    document.addEventListener('pointerup', releaseSwallow, true);
-    document.addEventListener('pointercancel', releaseSwallow, true);
-    chatBox.addEventListener('click', function (e) {
-      if (swallow) { e.stopPropagation(); e.preventDefault(); }
-    }, true);
-    // right-click (computer) or the browser's own long-press event (some phones) opens the same Edit option
-    chatBox.addEventListener('contextmenu', function (e) {
-      var el = closestMe(e.target);
-      if (!el) return;
-      e.preventDefault();
-      if (!el.querySelector('.cbe-edit')) { cancelHold(); showMenu(el); }
-    });
+  if (!el || el.querySelector('.cbe-edit')) return;
 
-    document.addEventListener('pointerdown', function (e) { if (menuEl && !menu.contains(e.target)) hideMenu(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideMenu(); });
-    window.addEventListener('resize', hideMenu);
+  e.preventDefault();
+  e.stopPropagation();
+
+  showMenu(el);
+});
+
+// Mobile double-tap support
+var lastTap = 0;
+var lastTapEl = null;
+
+chatBox.addEventListener('touchend', function (e) {
+  var el = closestMe(e.target);
+  if (!el || el.querySelector('.cbe-edit')) return;
+
+  var now = Date.now();
+
+  if (lastTapEl === el && now - lastTap < 350) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    showMenu(el);
+
+    lastTap = 0;
+    lastTapEl = null;
+  } else {
+    lastTap = now;
+    lastTapEl = el;
+  }
+}, { passive: false });
+
+// Close edit menu when clicking elsewhere
+document.addEventListener('pointerdown', function (e) {
+  if (menuEl && !menu.contains(e.target)) {
+    hideMenu();
+  }
+});
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') hideMenu();
+});
+
+window.addEventListener('resize', hideMenu);
 
     // handy check from the browser console:  ChatEdit.linked()  -> how many bubbles are connected
     window.ChatEdit = {
