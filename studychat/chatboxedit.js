@@ -162,7 +162,49 @@
       menuTimer = setTimeout(hideMenu, MENU_MS);
       return true;
     }
+/* ---------- swipe-to-edit ---------- */
 
+var swipeStart = null;
+var swipeTriggered = false;
+
+chatBox.addEventListener('touchstart', function(e) {
+  var el = closestMe(e.target);
+  if (!el || el.querySelector('.cbe-edit')) return;
+
+  var t = e.touches[0];
+
+  swipeStart = {
+    el: el,
+    x: t.clientX,
+    y: t.clientY
+  };
+
+  swipeTriggered = false;
+}, { passive: true });
+
+chatBox.addEventListener('touchmove', function(e) {
+  if (!swipeStart || swipeTriggered) return;
+
+  var t = e.touches[0];
+
+  var dx = t.clientX - swipeStart.x;
+  var dy = t.clientY - swipeStart.y;
+
+  var distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance >= 45) {
+    swipeTriggered = true;
+    showMenu(swipeStart.el);
+  }
+}, { passive: true });
+
+chatBox.addEventListener('touchend', function() {
+  swipeStart = null;
+});
+
+chatBox.addEventListener('touchcancel', function() {
+  swipeStart = null;
+});
     /* ---------- the bubble turns into an editor ---------- */
     function startEdit(el) {
       var key = el.getAttribute('data-ekey'), m = key && store[key];
