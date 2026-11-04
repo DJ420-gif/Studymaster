@@ -15,7 +15,7 @@
   'use strict';
 
   var FIREBASE_VERSION = '10.12.0';      // keep the same version your chat script uses
-  var ALLOWED = ['Me', 'Rani'];
+  var ALLOWED = ['Me', 'Queen'];
   var SWIPE_PX = 50;                     // drag this far to open the editor
   var ACTIVE_PX = 8;                     // below this it is just a tap
   var FOLLOW_MAX = 70;                   // how far the bubble follows your finger
