@@ -65,7 +65,7 @@
     <div class="chips" id="chips">
       <button type="button" data-f="all" class="on">All</button>
       <button type="button" data-f="Me">Me</button>
-      <button type="button" data-f="Rani">Rani</button>
+      <button type="button" data-f="Queen">Queen</button>
     </div>
     <span class="spacer"></span>
     <button id="clearLog" class="danger" type="button">🗑 Clear activity log</button>
@@ -89,18 +89,19 @@
   /* ===== settings ===== */
   var CONFIG = {
     version: '10.12.0',
-    users: ['Me', 'Rani'],
+    users: ['Me', 'Queen'],
     logPaths: ['chatActivity', 'chatroom/_log'],     // same as chatbox-activity.js
     keep: 300,                                       // newest log lines loaded from each path
     feedKeep: 300,                                   // lines kept in the live feed (saved on this device)
     firebase: {                                      // your Firebase web config (same as the chat page)
-      apiKey: "AIzaSyBYpNCS3vUuLAyilFplDO4KTiO7ZIpfN5U",
-      authDomain: "dj420-ced11.firebaseapp.com",
-      projectId: "dj420-ced11",
-      storageBucket: "dj420-ced11.firebasestorage.app",
-      messagingSenderId: "63911511566",
-      appId: "1:63911511566:web:8f92c936da406b2ec9de5f",
-      measurementId: "G-5BTJE6S99C"
+      apiKey: "AIzaSyBCrhwDdlAVGaEFAHd7eknX0Y7ouGeXFjg",
+  authDomain: "dj420-6cc63.firebaseapp.com",
+  databaseURL: "https://dj420-6cc63-default-rtdb.firebaseio.com",
+  projectId: "dj420-6cc63",
+  storageBucket: "dj420-6cc63.firebasestorage.app",
+  messagingSenderId: "473511917003",
+  appId: "1:473511917003:web:3d85c1c1972b8338b1324e",
+  measurementId: "G-B9WN0FHQ62"
     }
   };
   var BASE = 'https://www.gstatic.com/firebasejs/' + CONFIG.version + '/';
@@ -206,7 +207,7 @@
       document.querySelector('main').innerHTML = '<div class="empty">❌ Access denied</div>';
       return;
     }
-    var me = wanted, other = me === 'Me' ? 'Rani' : 'Me';
+    var me = wanted, other = me === 'Me' ? 'Queen' : 'Me';
     $('who').textContent = 'You are ' + me;
 
     var appMod = await import(BASE + 'firebase-app.js');
@@ -249,7 +250,7 @@
     var chipBtns = document.querySelectorAll('[data-f]');
     function drawList() {
       var all = allEntries();
-      var counts = { all: all.length, Me: 0, Rani: 0 };
+      var counts = { all: all.length, Me: 0, Queen: 0 };
       all.forEach(function (e) { if (counts[e.who] !== undefined) counts[e.who]++; });
       for (var i = 0; i < chipBtns.length; i++) {
         var f = chipBtns[i].getAttribute('data-f');
