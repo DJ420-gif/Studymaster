@@ -6,6 +6,61 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Activity</title>
 <style>
+  /* Online history */
+.presence-section{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:16px;
+}
+
+.presence-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:10px;
+}
+
+.presence-heading h2{
+  font-size:16px;
+  margin:0;
+}
+
+.presence-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 5px;
+  border-top:1px solid var(--line);
+}
+
+.presence-icon{
+  font-size:17px;
+}
+
+.presence-info{
+  flex:1;
+  min-width:0;
+}
+
+.presence-info b{
+  font-size:13px;
+}
+
+.presence-info small{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.presence-time{
+  color:var(--muted);
+  font-size:11px;
+  white-space:nowrap;
+}
   :root{--bg:#14120e;--card:#1e1b16;--card2:#262219;--text:#f2ead9;--muted:#9c9284;--line:rgba(255,255,255,.1);--accent:#d94f7e;--green:#22c55e}
   *{box-sizing:border-box}
   body{margin:0;padding:18px 14px 70px;background:radial-gradient(900px 400px at 50% -10%,#2a2233,transparent 60%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -52,7 +107,14 @@
   </header>
 
   <section class="cards" id="cards"></section>
-
+<!-- ONLINE HISTORY -->
+<section class="presence-section">
+  <div class="presence-heading">
+    <h2>🟢 Online History</h2>
+    <span class="sub">Online and offline activity</span>
+  </div>
+  <div id="presenceList"></div>
+</section>
   <div class="bar">
     <div class="tabs">
       <button id="tabAct" class="on" type="button">Activity</button>
