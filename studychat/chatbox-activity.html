@@ -78,7 +78,7 @@
   /* ===== settings ===== */
   var CONFIG = {
     version: '10.12.0',
-    users: ['Me', 'Rani'],
+    users: ['Me', 'Queen'],
     logPaths: ['chatActivity', 'chatroom/_log'],     // same as chatbox-activity.js
     keep: 300,                                       // newest log lines loaded
     liveKeep: 150,                                   // lines kept in the live database feed
@@ -164,7 +164,7 @@
       document.querySelector('main').innerHTML = '<div class="empty">❌ Access denied</div>';
       return;
     }
-    var me = wanted, other = me === 'Me' ? 'Rani' : 'Me';
+    var me = wanted, other = me === 'Me' ? 'Queen' : 'Me';
     $('who').textContent = 'You are ' + me;
     $('chips').children[0].textContent = other + ' only';
 
