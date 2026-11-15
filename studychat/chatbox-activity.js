@@ -21,7 +21,7 @@
 
   var CONFIG = {
     firebaseVersion: '10.12.0',            // keep the same version your chat script uses
-    users: ['Me', 'Rani'],
+    users: ['Me', 'Queen'],
     paths: ['chatActivity', 'chatroom/_log'],
     previewChars: 60,                      // how much of a sent message is shown in the log
     minGapMs: { typing: 45000, seen: 30000 }   // don't log these more often than this
@@ -38,7 +38,7 @@
     var theirs = document.querySelector('.message.other .username');
     if (theirs) {
       var t = theirs.textContent.trim();
-      return t === 'Me' ? 'Rani' : t === 'Rani' ? 'Me' : null;
+      return t === 'Me' ? 'Queen' : t === 'Queen' ? 'Me' : null;
     }
     return null;
   }
