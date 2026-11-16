@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Live typing</title>
+<style>
+  :root{--bg:#14120e;--card:#1e1b16;--text:#f2ead9;--muted:#9c9284;--line:rgba(255,255,255,.1);--accent:#d94f7e;--green:#22c55e}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;padding:18px 14px 40px;background:radial-gradient(900px 400px at 50% -10%,#2a2233,transparent 60%),var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:900px;margin:auto}
+  h1{font-size:20px;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid.one{grid-template-columns:1fr}
+  @media (max-width:620px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;min-height:220px;display:flex;flex-direction:column}
+  .head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#5a5347;flex:none}
+  .dot.on{background:var(--green);animation:pulse 1.8s infinite}
+  .name{font-weight:700}
+  .state{color:var(--muted);font-size:13px;margin-left:auto}
+  .state.typing{color:var(--accent)}
+  .draft{flex:1;white-space:pre-wrap;overflow-wrap:anywhere;font-size:19px;line-height:1.5;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px dashed var(--line)}
+  .draft.empty{color:var(--muted);font-size:15px;font-style:italic}
+  .caret{display:inline-block;width:2px;height:1.1em;margin-left:2px;vertical-align:-3px;background:var(--accent);animation:blink 1s steps(1) infinite}
+  .foot{margin-top:8px;color:var(--muted);font-size:12px;min-height:16px}
+  .note{margin-top:16px;color:var(--muted);font-size:12.5px}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+  @keyframes blink{50%{opacity:0}}
+</style>
+</head>
+<body>
+<main>
+  <h1>⌨️ Live typing</h1>
+  <div class="sub">See what is being typed — before it is sent. No sign-in needed.</div>
+  <div class="grid" id="grid"></div>
+  <div class="note" id="note"></div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var CONFIG = {
+    version: '10.12.0',
+    users: ['Me', 'Rani'],
+    expireMs: 20000,                    // a draft that has not changed for this long fades away
+    firebase: {                         // your Firebase web config (same as the chat page)
+      apiKey: "AIzaSyBYpNCS3vUuLAyilFplDO4KTiO7ZIpfN5U",
+      authDomain: "dj420-ced11.firebaseapp.com",
+      projectId: "dj420-ced11",
+      storageBucket: "dj420-ced11.firebasestorage.app",
+      messagingSenderId: "63911511566",
+      appId: "1:63911511566:web:8f92c936da406b2ec9de5f",
+      measurementId: "G-5BTJE6S99C"
+    }
+  };
+  var BASE = 'https://www.gstatic.com/firebasejs/' + CONFIG.version + '/';
+
+  function $(id) { return document.getElementById(id); }
+  function noop() {}
+  function ago(ts) {
+    var s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+    return s < 5 ? 'just now' : s < 60 ? s + ' s ago' : Math.floor(s / 60) + ' min ago';
+  }
+
+  async function main() {
+    // optional:  chatbox-typing-view.html?only=Rani   → show just one person, full width
+    var only = new URLSearchParams(window.location.search).get('only');
+    var users = CONFIG.users.indexOf(only) > -1 ? [only] : CONFIG.users;
+    if (users.length === 1) $('grid').className = 'grid one';
+
+    /* one panel per person (built with DOM calls, so typed text can never be treated as HTML) */
+    var P = {};
+    users.forEach(function (u) {
+      var root = document.createElement('div'); root.className = 'panel';
+      var head = document.createElement('div'); head.className = 'head';
+      var dot = document.createElement('span'); dot.className = 'dot';
+      var name = document.createElement('span'); name.className = 'name'; name.textContent = u;
+      var state = document.createElement('span'); state.className = 'state'; state.textContent = 'offline';
+      head.appendChild(dot); head.appendChild(name); head.appendChild(state);
+      var draft = document.createElement('div'); draft.className = 'draft empty'; draft.textContent = 'Nothing being typed';
+      var foot = document.createElement('div'); foot.className = 'foot';
+      root.appendChild(head); root.appendChild(draft); root.appendChild(foot);
+      $('grid').appendChild(root);
+      P[u] = { dot: dot, state: state, draft: draft, foot: foot, online: false, typing: false, text: '', changed: 0 };
+    });
+
+    var appMod = await import(BASE + 'firebase-app.js');
+    var dbMod = await import(BASE + 'firebase-database.js');
+    var app = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(CONFIG.firebase);
+    var db = dbMod.getDatabase(app);
+    var seenDraft = false;
+
+    function paint(u) {
+      var p = P[u];
+      var fresh = p.text.trim() && Date.now() - p.changed < CONFIG.expireMs;
+      p.dot.className = 'dot' + (p.online || p.typing || fresh ? ' on' : '');
+      p.state.className = 'state' + (p.typing || fresh ? ' typing' : '');
+      p.state.textContent = p.typing || fresh ? 'typing…' : p.online ? 'online' : 'offline';
+      if (fresh) {
+        p.draft.className = 'draft';
+        p.draft.textContent = p.text;
+        var caret = document.createElement('i'); caret.className = 'caret';
+        p.draft.appendChild(caret);
+        p.foot.textContent = 'updated ' + ago(p.changed);
+      } else {
+        p.draft.className = 'draft empty';
+        p.draft.textContent = 'Nothing being typed';
+        p.foot.textContent = '';
+      }
+    }
+
+    users.forEach(function (u) {
+      dbMod.onValue(dbMod.ref(db, 'chatroom/_draft_' + u), function (s) {
+        var v = s.val();
+        p_set(u, typeof v === 'string' ? v : '');
+        if (typeof v === 'string' && v) seenDraft = true;
+      }, noop);
+      dbMod.onValue(dbMod.ref(db, 'chatroom/_online_' + u), function (s) { P[u].online = s.val() === true; paint(u); }, noop);
+      dbMod.onValue(dbMod.ref(db, 'chatroom/_typing_' + u), function (s) { var v = s.val(); P[u].typing = typeof v === 'number' && v > 0; paint(u); }, noop);
+    });
+    function p_set(u, text) { P[u].text = text; P[u].changed = Date.now(); paint(u); }
+
+    setInterval(function () { users.forEach(paint); }, 1000);         // fades old drafts, refreshes "x s ago"
+    setTimeout(function () {
+      if (!seenDraft) $('note').textContent = 'Tip: words appear here while someone types, when chatbox-live.js is added to the chat page. Anyone who has this link can watch.';
+    }, 15000);
+  }
+
+  main().catch(function (err) { console.warn('[typing-view]', err); });
+})();
+</script>
+</body>
+</html>
