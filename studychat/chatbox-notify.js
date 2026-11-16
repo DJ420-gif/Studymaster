@@ -32,7 +32,7 @@
 
   var CONFIG = {
     firebaseVersion: '10.12.0',          // keep the same version your chat script uses
-    users: ['Me', 'Rani'],
+    users: ['Me', 'Queen'],
     path: 'chatroom/_notify',            // where the sender page writes
     serviceWorker: 'chatbox-sw.js',      // '' = don't use a service worker
     askOnFirstTap: true,                 // ask for notification permission on the first tap/click
@@ -69,7 +69,7 @@
     var theirs = document.querySelector('.message.other .username');
     if (theirs) {
       var t = theirs.textContent.trim();
-      return t === 'Me' ? 'Rani' : t === 'Rani' ? 'Me' : null;
+      return t === 'Me' ? 'Queen' : t === 'Queen' ? 'Me' : null;
     }
     return null;
   }
